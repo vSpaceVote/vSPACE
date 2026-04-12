@@ -1,0 +1,678 @@
+{
+  "prd_metadata": {
+    "document_id": "vSPACE_Autonomous_PRD_v260412a",
+    "version": "1.0.0",
+    "date": "2026-04-12",
+    "status": "Draft",
+    "execution_mode": "autonomous",
+    "description": "Autonomous PRD for ultrawork ralph_loop execution - code-only microservices artifacts without external auth/API gates",
+    "source_document": "README.md",
+    "trl_target": "3-5"
+  },
+  "execution_constraints": {
+    "mode": "autonomous_ralph_loop",
+    "requirements": [
+      "NO external API authentication gates",
+      "NO third-party service dependencies",
+      "NO manual intervention or clarification needed",
+      "Pure code-base microservices artifacts",
+      "Push to GitHub only - no local execution or Azure deployment"
+    ],
+    "execution_boundary": {
+      "in_scope": [
+        "C++ cryptographic implementations",
+        "Python reference implementations",
+        "Rust verifier extensions",
+        "Cryptol formal specifications",
+        "Unit tests and test vectors",
+        "Build system configurations",
+        "CI/CD workflow definitions"
+      ],
+      "out_of_scope": [
+        "Azure service integrations",
+        "Microsoft Entra Verified ID flows",
+        "FastHTML PWA deployments",
+        "NLWeb service instances",
+        "Production database configurations",
+        "Live credential issuance"
+      ]
+    }
+  },
+  "source_citations": {
+    "primary_source": "README.md",
+    "section_references": {
+      "executive_summary": "#1-introduction > #11-executive-summary",
+      "system_overview": "#1-introduction > #12-system-overview",
+      "scope": "#1-introduction > #13-scope",
+      "feature_catalog": "#2-product-requirements > #21-feature-catalog",
+      "electionguard_features": "#2-product-requirements > #21-feature-catalog > #212-electionguard-core2-feature-details",
+      "vspace_features": "#2-product-requirements > #21-feature-catalog > #213-vspace-extension-feature-details",
+      "functional_requirements_crypto": "#2-product-requirements > #22-functional-requirements > #221-cryptographic-foundation-requirements-f-001-f-005",
+      "functional_requirements_election": "#2-product-requirements > #22-functional-requirements > #222-election-domain-requirements-f-006-f-008",
+      "functional_requirements_auth": "#2-product-requirements > #22-functional-requirements > #223-anonymous-credential-authentication-requirements-f-100-f-101",
+      "functional_requirements_binding": "#2-product-requirements > #22-functional-requirements > #224-credential-binding-and-one-show-requirements-f-102-f-103",
+      "functional_requirements_verify": "#2-product-requirements > #22-functional-requirements > #228-verification-and-audit-requirements-f-109-f-110",
+      "functional_requirements_advanced": "#2-product-requirements > #22-functional-requirements > #229-advanced-extension-requirements-f-111-f-112",
+      "feature_relationships": "#2-product-requirements > #23-feature-relationships",
+      "implementation_constraints": "#2-product-requirements > #24-implementation-considerations > #241-technical-constraints",
+      "traceability": "#2-product-requirements > #25-traceability-matrix",
+      "tech_stack_languages": "#3-technology-stack > #31-programming-languages",
+      "tech_stack_frameworks": "#3-technology-stack > #32-frameworks-libraries",
+      "tech_stack_dependencies": "#3-technology-stack > #33-open-source-dependencies",
+      "tech_stack_build": "#3-technology-stack > #36-development-deployment",
+      "system_architecture": "#5-system-architecture",
+      "components_design": "#6-system-components-design",
+      "security_architecture": "#64-security-architecture",
+      "testing_strategy": "#66-testing-strategy",
+      "appendices": "#9-appendices"
+    }
+  },
+  "features": {
+    "electionguard_core2": {
+      "description": "Existing ElectionGuard Core2 capabilities - preserved unchanged as foundational layer",
+      "citation": "README.md#212-electionguard-core2-feature-details",
+      "features": [
+        {
+          "id": "F-001",
+          "name": "Modular Arithmetic Engine",
+          "category": "Cryptographic Foundation",
+          "priority": "Critical",
+          "status": "In Development",
+          "citation": "README.md#f-001-modular-arithmetic-engine",
+          "overview": "Implements modular arithmetic over a 4096-bit prime modulus group as specified in ElectionGuard Specification 1.1.0. Provides ElementModP and ElementModQ types with canonical constants (Q = 2^256 - 189, 4096-bit P).",
+          "business_value": "Mathematically verified algebraic foundation for all ElectionGuard cryptographic operations.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/group.cpp, include/electionguard/group.hpp",
+            "backing_library": "HACL* v0.6.0 (libs/hacl/)",
+            "operations": ["modular addition", "modular subtraction", "modular multiplication", "modular exponentiation", "random element sampling", "serialization", "secure memory erasure"]
+          },
+          "dependencies": {
+            "system": ["HACL* library v0.6.0", "C++17 compliant compiler"],
+            "external": []
+          },
+          "functional_requirements": [
+            {"id": "F-001-RQ-001", "description": "ElementModP arithmetic shall operate on a 4096-bit prime modulus group", "acceptance_criteria": "All test vectors pass", "priority": "Must-Have"},
+            {"id": "F-001-RQ-002", "description": "ElementModQ arithmetic shall operate with small prime Q = 2^256 - 189", "acceptance_criteria": "Operations bounded within 256-bit field", "priority": "Must-Have"},
+            {"id": "F-001-RQ-003", "description": "Random element sampling shall use DRBG-backed generation", "acceptance_criteria": "Generated elements pass statistical randomness tests", "priority": "Must-Have"}
+          ],
+          "performance_target": "< 1 ms per operation"
+        },
+        {
+          "id": "F-002",
+          "name": "ElGamal Encryption System",
+          "category": "Cryptographic Foundation",
+          "priority": "Critical",
+          "status": "In Development",
+          "citation": "README.md#f-002-elgamal-encryption-system",
+          "overview": "ElGamal public-key encryption with key pair generation, ciphertext creation, homomorphic addition, full/partial decryption, and hashed ElGamal for extended data.",
+          "business_value": "Core ballot secrecy guarantee - encrypted selections cannot be decrypted without threshold guardian cooperation.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/elgamal.cpp, include/electionguard/elgamal.hpp",
+            "operations": ["key pair generation", "ciphertext creation", "homomorphic addition", "full decryption", "partial decryption", "hashed ElGamal"]
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-001", "F-004"],
+            "system": ["HACL* library v0.6.0"]
+          },
+          "functional_requirements": [
+            {"id": "F-002-RQ-001", "description": "ElGamal encryption shall produce ciphertexts supporting homomorphic addition", "acceptance_criteria": "Sum of N ciphertexts decrypts to sum of N plaintexts", "priority": "Must-Have"},
+            {"id": "F-002-RQ-002", "description": "Hashed ElGamal shall protect extended ballot data payloads", "acceptance_criteria": "Extended data encrypts/decrypts correctly with no information leakage", "priority": "Must-Have"}
+          ],
+          "performance_target": "< 200 ms per ballot encryption"
+        },
+        {
+          "id": "F-003",
+          "name": "Chaum-Pedersen Zero-Knowledge Proofs",
+          "category": "Cryptographic Foundation",
+          "priority": "Critical",
+          "status": "In Development",
+          "citation": "README.md#f-003-chaum-pedersen-zero-knowledge-proofs",
+          "overview": "Chaum-Pedersen ZK proof system for ballot well-formedness without revealing contents. Supports disjunctive (0 or 1), ranged (count within limits), and constant proofs.",
+          "business_value": "Third-party verification of ballot correctness without plaintext access.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/chaum_pedersen.cpp, include/electionguard/chaum_pedersen.hpp",
+            "proof_types": ["disjunctive", "ranged", "constant"]
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-001", "F-004"]
+          },
+          "functional_requirements": [
+            {"id": "F-003-RQ-001", "description": "Disjunctive proofs shall verify encrypted selections are 0 or 1", "acceptance_criteria": "Valid proofs pass; invalid fail", "priority": "Must-Have"},
+            {"id": "F-003-RQ-002", "description": "Ranged proofs shall verify selection counts within limits", "acceptance_criteria": "Over-limit ballots rejected", "priority": "Must-Have"}
+          ],
+          "performance_target": "< 50 ms per proof verification"
+        },
+        {
+          "id": "F-004",
+          "name": "Hash and HMAC Primitives",
+          "category": "Cryptographic Foundation",
+          "priority": "Critical",
+          "status": "In Development",
+          "citation": "README.md#f-004-hash-and-hmac-primitives",
+          "overview": "Domain-separated SHA-256 hashing with spec-aligned hash-prefix constants, HMAC-SHA-256, and DRBG-backed random generation.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/hash.cpp, src/electionguard/hmac.cpp, src/electionguard/random.cpp",
+            "operations": ["SHA-256 hashing", "HMAC-SHA-256", "DRBG generation", "OS entropy seeding"]
+          },
+          "dependencies": {
+            "system": ["HACL* library v0.6.0"]
+          },
+          "functional_requirements": [
+            {"id": "F-004-RQ-001", "description": "SHA-256 shall implement domain separation with spec-aligned prefix constants", "acceptance_criteria": "Hash outputs match ElectionGuard Spec 1.1.0 test vectors", "priority": "Must-Have"}
+          ]
+        },
+        {
+          "id": "F-005",
+          "name": "Precomputation Engine",
+          "category": "Performance Optimization",
+          "priority": "High",
+          "status": "In Development",
+          "citation": "README.md#f-005-precomputation-engine",
+          "overview": "Thread-safe precomputation buffer pre-generating cryptographic values (exponentiation results). Singleton pattern with DEFAULT_PRECOMPUTE_SIZE = 5000.",
+          "business_value": "High-throughput ballot encryption by amortising expensive modular exponentiation.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/precompute_buffers.cpp, src/electionguard/discrete_log.cpp",
+            "constants": {"DEFAULT_PRECOMPUTE_SIZE": 5000, "DLOG_MAX_SIZE": 1000000}
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-001"]
+          },
+          "functional_requirements": [
+            {"id": "F-005-RQ-001", "description": "Precomputation buffer shall maintain at least 5000 pre-generated values", "acceptance_criteria": "Buffer refills automatically without blocking", "priority": "Should-Have"},
+            {"id": "F-005-RQ-002", "description": "Discrete log cache shall support lookup up to 1,000,000", "acceptance_criteria": "Cache hit rate exceeds 99%", "priority": "Should-Have"}
+          ]
+        },
+        {
+          "id": "F-006",
+          "name": "Election Manifest Management",
+          "category": "Election Domain",
+          "priority": "Critical",
+          "status": "In Development",
+          "citation": "README.md#f-006-election-manifest-management",
+          "overview": "Election structure definition: contests, candidates, ballot styles, geopolitical units, party info. Deterministic hashing, structural validation, multi-format serialization.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/manifest.cpp, include/electionguard/manifest.hpp",
+            "serialization_formats": ["JSON", "BSON", "MsgPack"]
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-004"],
+            "system": ["nlohmann_json 3.11.3"]
+          },
+          "functional_requirements": [
+            {"id": "F-006-RQ-001", "description": "Election manifest shall validate structure and produce deterministic hashes", "acceptance_criteria": "Same input produces identical hash; invalid manifests rejected", "priority": "Must-Have"},
+            {"id": "F-006-RQ-002", "description": "Manifest serialization shall support JSON, BSON, MsgPack", "acceptance_criteria": "Round-trip preserves all fields", "priority": "Must-Have"}
+          ]
+        },
+        {
+          "id": "F-007",
+          "name": "Ballot Lifecycle Management",
+          "category": "Election Domain",
+          "priority": "Critical",
+          "status": "In Development",
+          "citation": "README.md#f-007-ballot-lifecycle-management",
+          "overview": "Complete ballot state machine: plaintext -> encrypted -> submitted (cast/spoiled/challenged). Compact representation and manifest-driven reconstruction.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/ballot.cpp, src/electionguard/ballot_compact.cpp, src/electionguard/ballot_code.cpp, src/electionguard/nonces.cpp",
+            "state_machine": ["plaintext", "encrypted", "submitted", "cast", "spoiled", "challenged"]
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-002", "F-006"]
+          },
+          "functional_requirements": [
+            {"id": "F-007-RQ-001", "description": "Ballot state machine shall enforce valid transitions", "acceptance_criteria": "Invalid transitions throw exceptions; state immutable once set", "priority": "Must-Have"},
+            {"id": "F-007-RQ-002", "description": "Compact ballot shall reconstruct full ballot from manifest reference", "acceptance_criteria": "Byte-for-byte match", "priority": "Should-Have"}
+          ]
+        },
+        {
+          "id": "F-008",
+          "name": "Encryption Workflow Orchestration",
+          "category": "Election Domain",
+          "priority": "Critical",
+          "status": "In Development",
+          "citation": "README.md#f-008-encryption-workflow-orchestration",
+          "overview": "Complete ballot encryption pipeline via EncryptionDevice (stateful metadata) and EncryptionMediator (orchestration). Handles normalization, extended-data encoding, precompute-buffer consumption.",
+          "technical_context": {
+            "implementation_location": "src/electionguard/encrypt.cpp, src/electionguard/election.cpp",
+            "components": ["EncryptionDevice", "EncryptionMediator", "CiphertextElectionContext", "ContextConfiguration"],
+            "constants": {"DEFAULT_MAX_BALLOTS": 1000000}
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-002", "F-003", "F-005", "F-006", "F-007"]
+          },
+          "functional_requirements": [
+            {"id": "F-008-RQ-001", "description": "EncryptionMediator shall orchestrate complete ballot encryption with all proofs", "acceptance_criteria": "Every encrypted ballot passes Chaum-Pedersen verification", "priority": "Must-Have"},
+            {"id": "F-008-RQ-002", "description": "Ballot code chaining shall produce sequential verifiable codes", "acceptance_criteria": "Each code derivable from predecessor", "priority": "Must-Have"},
+            {"id": "F-008-RQ-003", "description": "System shall support up to 1,000,000 encrypted ballots", "acceptance_criteria": "No memory exhaustion or performance degradation", "priority": "Must-Have"}
+          ],
+          "performance_target": "< 200 ms per ballot encryption"
+        },
+        {
+          "id": "F-009",
+          "name": "Cross-Language Binding Layer",
+          "category": "Interoperability",
+          "priority": "High",
+          "status": "In Development",
+          "citation": "README.md#f-009-cross-language-binding-layer",
+          "overview": "Interoperability surfaces for C, .NET, TypeScript, WebAssembly. C ABI facades (19 files) with opaque eg_* handles. .NET Standard bindings (netstandard2.0, net10.0). TypeScript/WASM npm package.",
+          "technical_context": {
+            "implementation_locations": {
+              "c_facades": "src/electionguard/facades/ (19 files)",
+              "dotnet_bindings": "bindings/netstandard/",
+              "typescript_wasm": "bindings/typescript/",
+              "wasm_sources": "src/electionguard/wasm/ (6 files)",
+              "interop_generator": "src/interop-generator/"
+            },
+            "status_codes": "include/electionguard/status.h"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-001 through F-008"],
+            "system": ["Emscripten (WASM targets)"]
+          }
+        },
+        {
+          "id": "F-010",
+          "name": "MongoDB Persistence Layer",
+          "category": "Infrastructure",
+          "priority": "High",
+          "status": "In Development",
+          "citation": "README.md#f-010-mongodb-persistence-layer",
+          "overview": "Database persistence using MongoDB 6.0.3 via Docker Compose. Collections: key_ceremonies, elections, ballots, tallies with polymorphic DataType indexes.",
+          "technical_context": {
+            "configuration_location": "src/electionguard-db/",
+            "docker_image": "mongo:6.0.3",
+            "collections": ["key_ceremonies", "elections", "ballots", "tallies"],
+            "admin_ui": "mongo-express 1.0.0-alpha.4 (port 8181)",
+            "init_script": "mongo-init.js"
+          },
+          "dependencies": {
+            "external": ["MongoDB 6.0.3 (Docker)", "mongo-express"]
+          }
+        },
+        {
+          "id": "F-011",
+          "name": "CLI Tooling",
+          "category": "Infrastructure",
+          "priority": "Medium",
+          "status": "In Development",
+          "citation": "README.md#f-011-cli-tooling",
+          "overview": ".NET 10 global tool for creating election artifacts, encrypting ballots, generating synthetic test ballots, verification operations.",
+          "technical_context": {
+            "implementation_location": "apps/electionguard-cli/"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-009 (.NET bindings)"],
+            "system": [".NET 10 runtime"]
+          }
+        },
+        {
+          "id": "F-012",
+          "name": "Cross-Platform Build System",
+          "category": "Infrastructure",
+          "priority": "High",
+          "status": "In Development",
+          "citation": "README.md#f-012-cross-platform-build-system",
+          "overview": "CMake 3.14+ with CPM 0.31.0, GNU Make workflow automation, GitHub Actions CI/CD. Platforms: Linux, macOS, Windows, Android, iOS, WebAssembly.",
+          "technical_context": {
+            "build_tools": ["CMake 3.14+", "CPM.cmake 0.31.0", "GNU Make"],
+            "ci_workflows": ["CodeQL", "PR validation", "Release", "Sanitizer"],
+            "platforms": ["Linux (Debian)", "macOS (Xcode)", "Windows (MSVC 2022)", "Android (API 26+)", "iOS (12+)", "WebAssembly (Emscripten)"],
+            "test_frameworks": ["doctest 2.4.12", "NUnit", "Google Benchmark 1.5.2"]
+          },
+          "dependencies": {
+            "system": ["CMake 3.14+", "C++17 compiler"],
+            "external": ["HACL* 0.6.0", "nlohmann_json 3.11.3", "spdlog 1.9.2", "date 3.0.1"]
+          }
+        }
+      ]
+    },
+    "vspace_anonymous_credentials": {
+      "description": "vSPACE Anonymous Credential Authentication Layer - autonomous cryptographic implementations",
+      "citation": "README.md#213-vspace-extension-feature-details",
+      "features": [
+        {
+          "id": "F-100",
+          "name": "SAAC Protocol Implementation",
+          "category": "Anonymous Credential Auth",
+          "priority": "Critical",
+          "status": "Proposed",
+          "target_phase": "Phase 1",
+          "trl": 3,
+          "citation": "README.md#f-100-saac-protocol-implementation",
+          "overview": "Server-Aided Anonymous Credentials protocol (ePrint 2025/513, CRYPTO 2025). Oblivious issuance and publicly verifiable, multi-show anonymous credentials on pairing-free NIST P-256/P-384 curves.",
+          "business_value": "Voter authentication that is unlinkable - no correlation between authentication event and encrypted ballot.",
+          "user_benefits": "Voters prove eligibility without revealing identity, preserving ballot secrecy.",
+          "technical_context": {
+            "python_module": "electionguard_vspace.saac",
+            "cpp_library": "libvspace-auth",
+            "cpp_headers": "include/vspace/saac.hpp",
+            "cpp_source": "src/vspace/saac.cpp",
+            "crypto_backend": "HACL* v0.6.0 (P-256 field arithmetic)",
+            "curves": ["NIST P-256", "NIST P-384"],
+            "properties": ["oblivious issuance", "publicly verifiable presentation", "multi-show", "pairing-free"]
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-001", "F-004"],
+            "system": ["HACL* v0.6.0"],
+            "external_python": ["ecdsa", "pycryptodome"]
+          },
+          "functional_requirements": [
+            {"id": "F-100-RQ-001", "description": "SAAC issuance shall be oblivious - issuer cannot link issuance to presentation", "acceptance_criteria": "No statistical correlation under DDH assumption", "priority": "Must-Have"},
+            {"id": "F-100-RQ-002", "description": "SAAC presentation shall produce publicly verifiable proofs on NIST P-256", "acceptance_criteria": "Proofs verify with issuer public parameters only", "priority": "Must-Have"},
+            {"id": "F-100-RQ-003", "description": "SAAC auxiliary information generation shall be anonymous", "acceptance_criteria": "Aux info indistinguishable between eligible voters", "priority": "Must-Have"},
+            {"id": "F-100-RQ-004", "description": "C++ implementation shall produce bit-identical outputs to Python reference", "acceptance_criteria": "Byte-level comparison passes for all test vectors", "priority": "Must-Have"}
+          ],
+          "performance_targets": {
+            "issuance_latency": "< 500 ms",
+            "presentation_verification": "< 50 ms (C++, single-core Intel Xeon E5-2680)"
+          }
+        },
+        {
+          "id": "F-101",
+          "name": "Multi-Holder BBS Credentials",
+          "category": "Anonymous Credential Auth",
+          "priority": "High",
+          "status": "Proposed",
+          "target_phase": "Phase 1",
+          "trl": 3,
+          "citation": "README.md#f-101-multi-holder-bbs-credentials",
+          "overview": "Multi-Holder Anonymous Credentials from BBS Signatures (ePrint 2024/1874, CRYPTO 2025). Credential shares distributed across multiple devices. Threshold presentation prevents single-point-of-compromise identity theft.",
+          "business_value": "Credential-theft resistance - no single compromised device can impersonate voter.",
+          "technical_context": {
+            "python_module": "electionguard_vspace.multiholder",
+            "cpp_headers": "include/vspace/multiholder.hpp",
+            "cpp_source": "src/vspace/multiholder.cpp",
+            "crypto_backend": "HACL* (BLS12-381 arithmetic)",
+            "curve": "BLS12-381 (pairing-based)",
+            "threshold_config": {"min": "1-of-2", "max": "2-of-2"},
+            "credential_bridge": "BBS multi-holder shares -> SAAC presentation without materialising full BBS credential"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-100", "F-001"],
+            "system": ["HACL* (BLS12-381)"]
+          },
+          "functional_requirements": [
+            {"id": "F-101-RQ-001", "description": "Credential splitting shall distribute shares across configurable holder devices", "acceptance_criteria": "Share reconstruction produces valid credential with any t-of-n threshold", "priority": "Must-Have"},
+            {"id": "F-101-RQ-002", "description": "Threshold presentation shall require cooperation from configured device count", "acceptance_criteria": "Presentation fails with fewer than threshold; succeeds with threshold", "priority": "Must-Have"},
+            {"id": "F-101-RQ-003", "description": "Credential re-derivation bridge shall convert BBS shares to SAAC without materialising full BBS credential", "acceptance_criteria": "No single device holds complete BBS credential during re-derivation", "priority": "Must-Have"}
+          ],
+          "performance_targets": {
+            "split_operation": "< 200 ms",
+            "threshold_presentation": "< 100 ms cooperative proof"
+          }
+        },
+        {
+          "id": "F-102",
+          "name": "Credential-to-Ballot Binding",
+          "category": "Credential Binding",
+          "priority": "Critical",
+          "status": "Proposed",
+          "target_phase": "Phase 1",
+          "trl": 3,
+          "citation": "README.md#f-102-credential-to-ballot-binding",
+          "overview": "Cryptographic binding of anonymous credential presentation to ElectionGuard ballot encryption. Pedersen commitment C = g^r * h^s where r is ballot nonce and s is credential serial number. Zero-knowledge proof demonstrates commitment links both without revealing either.",
+          "business_value": "Three simultaneous properties: ballot stuffing prevention, unlinkability, ballot secrecy preservation.",
+          "technical_context": {
+            "python_module": "electionguard_vspace.binding",
+            "cpp_headers": "include/vspace/binding.hpp",
+            "cpp_source": "src/vspace/binding.cpp",
+            "commitment_scheme": "Pedersen commitment",
+            "proof_type": "Schnorr-like sigma protocols (Fiat-Shamir transformed)",
+            "integration": "Wraps electionguard.encrypt without modifying internals"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-100", "F-008", "F-004"]
+          },
+          "functional_requirements": [
+            {"id": "F-102-RQ-001", "description": "Pedersen commitment shall correctly bind ballot nonce r to credential serial s", "acceptance_criteria": "Commitment C = g^r * h^s verifiable with published generators and proof", "priority": "Must-Have"},
+            {"id": "F-102-RQ-002", "description": "Zero-knowledge binding proof shall demonstrate commitment links both ballot and credential without revealing either", "acceptance_criteria": "Proof passes verification; extraction computationally infeasible", "priority": "Must-Have"},
+            {"id": "F-102-RQ-003", "description": "Binding layer shall wrap electionguard.encrypt without modifying internals", "acceptance_criteria": "All standard ElectionGuard proofs remain valid; binding additive only", "priority": "Must-Have"}
+          ],
+          "performance_targets": {
+            "commitment_generation": "< 10 ms",
+            "proof_generation": "< 50 ms"
+          }
+        },
+        {
+          "id": "F-103",
+          "name": "One-Show Enforcement",
+          "category": "Credential Binding",
+          "priority": "Critical",
+          "status": "Proposed",
+          "target_phase": "Phase 1",
+          "trl": 3,
+          "citation": "README.md#f-103-one-show-enforcement",
+          "overview": "Mechanism ensuring each voter casts at most one ballot per election. VRF evaluated on election identifier under credential-derived key produces deterministic but unlinkable serial number.",
+          "technical_context": {
+            "integration": "electionguard_vspace.binding and electionguard_vspace.saac",
+            "registry_collection": "vspace_serial_numbers (MongoDB)",
+            "serial_derivation": "VRF on election ID with credential-derived key",
+            "verification": "Anyone can verify no serial appears twice"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-100", "F-004"],
+            "integration": ["F-010"]
+          },
+          "functional_requirements": [
+            {"id": "F-103-RQ-001", "description": "VRF serial derivation shall be deterministic given credential and election ID", "acceptance_criteria": "Same credential + election ID produces same serial", "priority": "Must-Have"},
+            {"id": "F-103-RQ-002", "description": "Serial uniqueness check shall reject any ballot with duplicate serial", "acceptance_criteria": "Duplicate serials detected; second ballot rejected prior to casting", "priority": "Must-Have"},
+            {"id": "F-103-RQ-003", "description": "Serial shall be unlinkable to voter identity", "acceptance_criteria": "No voter credential/identity info derivable from published serial", "priority": "Must-Have"}
+          ],
+          "performance_targets": {
+            "derivation": "< 5 ms",
+            "lookup": "< 10 ms"
+          }
+        }
+      ]
+    },
+    "vspace_verification": {
+      "description": "vSPACE Verification and Audit Layer - autonomous verification implementations",
+      "citation": "README.md#228-verification-and-audit-requirements-f-109-f-110",
+      "features": [
+        {
+          "id": "F-109",
+          "name": "Augmented Election Record",
+          "category": "Verification & Audit",
+          "priority": "Critical",
+          "status": "Proposed",
+          "target_phase": "Phase 3",
+          "trl": 5,
+          "citation": "README.md#f-109-augmented-election-record",
+          "overview": "Extends standard ElectionGuard JSON election record with vspace_record section: issuer public parameters, one-show serial numbers, binding commitments, binding proofs, SAAC auxiliary information. Backward compatible - standard verifiers ignore vspace_record.",
+          "technical_context": {
+            "python_module": "electionguard_vspace.record",
+            "mongodb_collections": ["vspace_credentials", "vspace_serial_numbers", "vspace_bindings"],
+            "record_sections": {
+              "issuer_public_params": "SAAC issuer public parameters",
+              "serial_numbers": "One per cast ballot",
+              "binding_commitments": "One per cast ballot",
+              "binding_proofs": "One per cast ballot",
+              "saac_aux_info": "Public components"
+            }
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-102", "F-103"],
+            "integration": ["F-010"]
+          },
+          "functional_requirements": [
+            {"id": "F-109-RQ-001", "description": "Augmented record shall include vspace_record section with all vSPACE artifacts", "acceptance_criteria": "Record contains issuer params, all serials, all commitments, all proofs, SAAC aux info", "priority": "Must-Have"},
+            {"id": "F-109-RQ-002", "description": "Standard ElectionGuard verifiers shall process augmented record without error", "acceptance_criteria": "Existing electionguard-verifier produces valid result on augmented records", "priority": "Must-Have"}
+          ],
+          "performance_target": "< 5 seconds for 1M ballot serialization"
+        },
+        {
+          "id": "F-110",
+          "name": "vSPACE Verifier Extension",
+          "category": "Verification & Audit",
+          "priority": "Critical",
+          "status": "Proposed",
+          "target_phase": "Phase 3",
+          "trl": 5,
+          "citation": "README.md#f-110-vspace-verifier-extension",
+          "overview": "Rust crate vspace-verify extending electionguard-verifier with SAAC presentation validity checks, one-show serial uniqueness verification, and binding proof correctness.",
+          "technical_context": {
+            "rust_crate": "vspace-verify",
+            "modules": ["saac_verify.rs", "binding_verify.rs", "serial_verify.rs"],
+            "checks": [
+              "Credential presentation validity",
+              "Serial number uniqueness across all cast ballots",
+              "Binding proof linking commitment to ballot and credential",
+              "SAAC auxiliary information consistency"
+            ],
+            "usage": "Standalone or integrated with existing Rust verifier pipeline"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-109", "F-003"],
+            "system": ["Rust toolchain (Cargo)"]
+          },
+          "functional_requirements": [
+            {"id": "F-110-RQ-001", "description": "vSPACE verifier shall validate SAAC presentation proofs for all cast ballots", "acceptance_criteria": "All valid presentations pass; invalid causes failure", "priority": "Must-Have"},
+            {"id": "F-110-RQ-002", "description": "vSPACE verifier shall detect duplicate one-show serial numbers", "acceptance_criteria": "Duplicate serials cause verification failure with descriptive error", "priority": "Must-Have"},
+            {"id": "F-110-RQ-003", "description": "vSPACE verifier shall validate binding proofs", "acceptance_criteria": "Valid proofs pass; tampered commitments/mismatched bindings cause failure", "priority": "Must-Have"}
+          ],
+          "performance_targets": {
+            "presentation_verification": "< 50 ms per ballot",
+            "binding_verification": "< 50 ms per ballot",
+            "serial_uniqueness": "O(n log n) sort-based check"
+          }
+        }
+      ]
+    },
+    "vspace_advanced": {
+      "description": "vSPACE Advanced Extensions - autonomous networking and dynamic guardians",
+      "citation": "README.md#229-advanced-extension-requirements-f-111-f-112",
+      "features": [
+        {
+          "id": "F-111",
+          "name": "FDVSS-1 Dynamic Guardians",
+          "category": "Advanced Extensions",
+          "priority": "Low",
+          "status": "Proposed",
+          "target_phase": "Phase 3",
+          "trl": 5,
+          "citation": "README.md#f-111-fdvss-1-dynamic-guardians-optional",
+          "overview": "Optional extension of guardian key ceremony with Fully Dynamic Verifiable Secret Sharing. Allows guardians to join/leave committee without re-keying. FDPSS redistribution enables single-round guardian rotation.",
+          "technical_context": {
+            "integration_layer": "electionguard-api-python",
+            "activation_parameter": "dynamic_committee=true",
+            "security_properties": {
+              "sharing_phase": "Information-theoretic security",
+              "redistribution": "FDPSS protocol bound to tally accumulation"
+            },
+            "source": "ePrint 2026/011 (withdrawn)"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-001", "F-112"]
+          },
+          "functional_requirements": [
+            {"id": "F-111-RQ-001", "description": "FDVSS-1 shall generate guardian key shares with information-theoretic security", "acceptance_criteria": "Share reconstruction with t-of-n threshold recovers election private key", "priority": "Could-Have"},
+            {"id": "F-111-RQ-002", "description": "FDPSS redistribution shall transfer compromised guardian share to replacement in single round", "acceptance_criteria": "Redistribution completes without revealing election private key", "priority": "Could-Have"}
+          ],
+          "notes": "Based on withdrawn manuscript; carries academic risk; optional feature flag mitigates"
+        },
+        {
+          "id": "F-112",
+          "name": "Authenticated Networking Layer",
+          "category": "Advanced Extensions",
+          "priority": "Medium",
+          "status": "Proposed",
+          "target_phase": "Phase 3",
+          "trl": 5,
+          "citation": "README.md#f-112-authenticated-networking-layer",
+          "overview": "TLS 1.3 mutual authentication for all guardian communication. Certificate pinning, election-specific CA, DoS-resistant gossip protocol (Bracha's reliable broadcast, O(n log n) complexity), UC Framework verification.",
+          "technical_context": {
+            "interface": "AuthenticatedChannel (abstract)",
+            "implementations": ["SimulatedChannel (testing)", "ProductionTLSChannel (production)"],
+            "dependency_injection": "Swapping between implementations",
+            "protocol_features": {
+              "tls_version": "TLS 1.3",
+              "certificate_pinning": "SHA-256 public key pins",
+              "ca": "Election-specific CA",
+              "byzantine_tolerance": "t < n/3 faults",
+              "message_complexity": "O(n log n)"
+            }
+          },
+          "dependencies": {
+            "external_python": ["cryptography >= 43.0"],
+            "system": ["TLS 1.3 infrastructure"]
+          },
+          "functional_requirements": [
+            {"id": "F-112-RQ-001", "description": "All guardian communication shall use mutually authenticated TLS 1.3", "acceptance_criteria": "Connections without valid mutual certificates rejected; certificate pinning enforced", "priority": "Should-Have"},
+            {"id": "F-112-RQ-002", "description": "Broadcast channel shall tolerate t < n/3 Byzantine faults", "acceptance_criteria": "Consensus reached with up to floor((n-1)/3) faulty guardians", "priority": "Should-Have"}
+          ]
+        }
+      ]
+    }
+  },
+  "technology_stack": {
+    "citation": "README.md#3-technology-stack",
+    "languages": [
+      {"name": "C++", "standard": "C++17", "purpose": "Core cryptographic SDK", "status": "Existing"},
+      {"name": "C", "standard": "C99", "purpose": "ABI facade layer", "status": "Existing"},
+      {"name": "C#", "standard": ".NET 10.0", "purpose": "Bindings, CLI, MAUI UI", "status": "Existing"},
+      {"name": "TypeScript", "standard": "5.0.4+", "purpose": "WASM bindings", "status": "Existing"},
+      {"name": "Python", "standard": "3.9+", "purpose": "vSPACE extensions, reference implementations", "status": "Proposed"},
+      {"name": "Rust", "standard": "Stable (2021 edition)", "purpose": "Verifier extension", "status": "Proposed"},
+      {"name": "Cryptol", "standard": "Latest", "purpose": "Formal specification", "status": "Proposed"}
+    ],
+    "cpp_dependencies": {
+      "citation": "README.md#332-c-third-party-dependencies-via-cpm",
+      "packages": [
+        {"name": "HACL*", "version": "0.6.0", "source": "github.com/cryspen/hacl-packages", "license": "Apache 2.0/MIT"},
+        {"name": "nlohmann_json", "version": "3.11.3", "source": "github.com/nlohmann/json", "license": "MIT"},
+        {"name": "spdlog", "version": "1.9.2", "source": "github.com/gabime/spdlog", "license": "MIT"},
+        {"name": "HowardHinnant/date", "version": "3.0.1", "source": "github.com/HowardHinnant/date", "license": "MIT"},
+        {"name": "doctest", "version": "2.4.12", "source": "github.com/doctest/doctest", "license": "MIT"},
+        {"name": "Google Benchmark", "version": "1.5.2", "source": "github.com/google/benchmark", "license": "Apache 2.0"}
+      ]
+    },
+    "python_dependencies": {
+      "citation": "README.md#335-proposed-python-dependencies-via-pippoetry",
+      "packages": [
+        {"name": "ecdsa", "version": ">= 0.18", "license": "MIT", "purpose": "NIST P-256 operations"},
+        {"name": "pycryptodome", "version": ">= 3.19", "license": "BSD-2-Clause", "purpose": "Cryptographic primitives"},
+        {"name": "cryptography", "version": ">= 43.0", "license": "Apache 2.0", "purpose": "TLS 1.3, X.509"}
+      ]
+    }
+  },
+  "phase_gates": {
+    "citation": "README.md#253-phase-gate-acceptance-summary",
+    "phases": [
+      {
+        "phase": "Phase 1 - Foundation",
+        "trl": 3,
+        "timeline": "Months 1-4",
+        "gate_conditions": "All SAAC, Multi-Holder, and binding unit tests pass. 10-voter, 3-guardian, 2-of-3 threshold simulation produces verifiable augmented election record.",
+        "features": ["F-100", "F-101", "F-102", "F-103"]
+      },
+      {
+        "phase": "Phase 3 - Production Hardening",
+        "trl": 5,
+        "timeline": "Months 5-9",
+        "gate_conditions": "C++ bit-identical to Python. Credential verification < 50 ms. Rust verifier validates all records. Docker health < 60 s.",
+        "features": ["F-109", "F-110", "F-111", "F-112"]
+      }
+    ]
+  },
+  "constraints": {
+    "citation": "README.md#262-constraints",
+    "constraints": [
+      {"id": "C-001", "constraint": "No modification to any existing ElectionGuard module, parameter, or API", "rationale": "Non-invasive extension principle; backward compatibility"},
+      {"id": "C-002", "constraint": "All vSPACE features must be additive", "rationale": "Existing verifiers must work without modification"},
+      {"id": "C-004", "constraint": "Pre-release status - not for production elections", "rationale": "Repository README explicitly states this limitation"},
+      {"id": "C-005", "constraint": "SAFE-D compliance", "rationale": "Safe, Accountable, Fair, Explainable, Data-governed"},
+      {"id": "C-006", "constraint": "MIT license alignment", "rationale": "Consistent with ElectionGuard ecosystem"}
+    ]
+  },
+  "external_references": {
+    "citation": "README.md#27-references",
+    "papers": [
+      {"title": "SAAC Protocol", "source": "ePrint 2025/513 (CRYPTO 2025)", "authors": "Chairattana-Apirom et al."},
+      {"title": "Multi-Holder BBS Credentials", "source": "ePrint 2024/1874 (CRYPTO 2025)", "authors": "Flamini, Lee, Lysyanskaya"},
+      {"title": "FDVSS-1", "source": "ePrint 2026/011 (withdrawn)", "authors": "Li, Zou, Qian, Zhang"}
+    ],
+    "repositories": [
+      {"name": "electionguard-core2", "url": "https://github.com/Election-Tech-Initiative/electionguard-core2"},
+      {"name": "ElectionGuard-SDK-Specification", "url": "https://github.com/Election-Tech-Initiative/ElectionGuard-SDK-Specification"}
+    ]
+  }
+}

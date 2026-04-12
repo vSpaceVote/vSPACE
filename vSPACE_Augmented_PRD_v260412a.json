@@ -1,0 +1,830 @@
+{
+  "prd_metadata": {
+    "document_id": "vSPACE_Augmented_PRD_v260412a",
+    "version": "1.0.0",
+    "date": "2026-04-12",
+    "status": "Draft",
+    "execution_mode": "augmented",
+    "description": "vSPACE Augmented PRD - Features requiring SDE-in-the-Loop oversight with pre-provided secrets/credentials. Contains features F-104 through F-108 that depend on external Azure services, Entra Verified ID, and API authentication gates.",
+    "source_document": "README.md",
+    "trl_target": "4-6",
+    "execution_requirements": {
+      "mode": "augmented_ultrawork",
+      "sde_role": "EitL Tutors overseeing progress and providing auth/keys/creds in advance",
+      "credential_delivery": "Secrets/Vars exported BEFORE ralph_loop begins",
+      "human_intervention_points": [
+        "Entra Verified ID tenant setup",
+        "Azure AD Premium P2 licensing verification",
+        "Azure service provisioning (App Service, AKS, Cosmos DB, Key Vault, AI Search, OpenAI)",
+        "OAuth2 admin consent for VerifiableCredential.Create.All",
+        "DID document registration at did:web endpoint",
+        "Custom VoterEligibilityCredential contract definition"
+      ]
+    }
+  },
+  "execution_constraints": {
+    "mode": "augmented",
+    "requirements": [
+      "SDE-in-the-Loop MUST provide all Azure credentials before execution begins",
+      "MSAL OAuth2 tokens MUST be pre-acquired with VerifiableCredential.Create.All permission",
+      "Azure AD Premium P2 or Microsoft Entra Suite licensing MUST be verified",
+      "Entra Verified ID sandbox tenant MUST be configured and accessible",
+      "DID document MUST be registered at https://vspacevote.com/.well-known/did.json",
+      "Azure App Service instances MUST be provisioned for vSpaceVote.com and vSpaceWallet.com",
+      "Azure AI Search MUST be configured for vector store indexing",
+      "Azure OpenAI Service MUST be provisioned with appropriate quotas",
+      "All secrets MUST be exported as environment variables before ralph_loop starts"
+    ],
+    "execution_boundary": "Features execute against live Azure services - NOT local simulation. Requires production-grade cloud infrastructure.",
+    "blocked_without": [
+      "AZURE_ENTRA_TENANT_ID",
+      "AZURE_AD_APP_CLIENT_ID",
+      "AZURE_AD_APP_CLIENT_SECRET",
+      "AZURE_SUBSCRIPTION_ID",
+      "AZURE_OPENAI_ENDPOINT",
+      "AZURE_OPENAI_API_KEY",
+      "AZURE_AI_SEARCH_ENDPOINT",
+      "AZURE_AI_SEARCH_API_KEY",
+      "AZURE_KEY_VAULT_URI",
+      "AZURE_COSMOS_DB_CONNECTION_STRING",
+      "ENTRA_VC_ISSUANCE_AUTHORITY",
+      "ENTRA_VC_PRESENTATION_AUTHORITY"
+    ]
+  },
+  "source_citations": {
+    "primary_source": "README.md",
+    "section_references": {
+      "feature_catalog": "#21-feature-catalog",
+      "feature_details": "#213-vspace-extension-feature-details",
+      "entra_verified_id": "#f-104-entra-verified-id-bridge",
+      "vspacevote_pwa": "#f-105-vspacevotecom-voter-facing-pwa",
+      "vspacewallet_pwa": "#f-106-vspacewalletcom-credential-wallet-pwa",
+      "cross_origin": "#f-107-cross-origin-communication-protocol",
+      "nlweb": "#f-108-nlweb-conversational-interfaces",
+      "identity_requirements": "#225-identity-management-requirements-f-104",
+      "user_app_requirements": "#226-user-application-requirements-f-105-f-107",
+      "conversational_requirements": "#227-conversational-and-agentic-interface-requirements-f-108",
+      "third_party_services": "#34-third-party-services",
+      "entra_integration": "#341-microsoft-entra-verified-id-proposed",
+      "azure_openai": "#342-azure-openai-service-proposed",
+      "nlweb_service": "#343-nlweb-protocol-service-proposed",
+      "azure_infrastructure": "#344-azure-infrastructure-services-proposed",
+      "technology_stack": "#3-technology-stack",
+      "python_frameworks": "#325-vspace-python-frameworks-and-libraries-proposed",
+      "system_architecture": "#5-system-architecture",
+      "identity_layer": "#524-identity-and-credential-management-layer-4",
+      "presentation_layer": "#525-presentation-and-agentic-interface-layer-5",
+      "vspacevote_detail": "#vspacevotecom-voter-facing-pwa",
+      "vspacewallet_detail": "#vspacewalletcom-credential-wallet-pwa",
+      "nlweb_instances": "#nlweb-conversational-ai-instances",
+      "integration_architecture": "#63-integration-architecture",
+      "entra_bridge": "#6332-microsoft-entra-verified-id-integration",
+      "nlweb_integration": "#6334-nlweb-protocol-service-integration",
+      "ui_design": "#7-user-interface-design",
+      "vspacevote_ui": "#75-vspacevotecom-voter-facing-progressive-web-application",
+      "vspacewallet_ui": "#76-vspacewalletcom-credential-wallet-progressive-web-application",
+      "cross_origin_ui": "#77-cross-origin-communication-protocol-f-107",
+      "nlweb_ui": "#754-nlweb-conversational-interface-f-108",
+      "infrastructure": "#8-infrastructure",
+      "azure_services": "#82-cloud-services",
+      "deployment": "#81-deployment-environment"
+    }
+  },
+  "features": {
+    "identity_management": {
+      "description": "Microsoft Entra Verified ID Bridge - W3C Verifiable Credential infrastructure for voter identity verification",
+      "citation": "#f-104-entra-verified-id-bridge",
+      "features": [
+        {
+          "id": "F-104",
+          "name": "Entra Verified ID Bridge",
+          "category": "Identity Management",
+          "priority": "High",
+          "status": "Proposed",
+          "phase": "Phase 2",
+          "trl": "4",
+          "citation": "#f-104-entra-verified-id-bridge",
+          "overview": "Handles all communication with Microsoft Entra Verified ID services for W3C Verifiable Credential issuance and presentation via the did:web method. Implements a three-phase model: Registration (VC issuance attesting voter eligibility), Credential Derivation (oblivious protocol bridging Entra VC to SAAC anonymous credential), and Voting (only the anonymous credential is used - the Entra VC is never presented to the voting system).",
+          "business_value": "Provides enterprise-grade, standards-compliant identity verification while preserving complete unlinkability between voter identity and ballot through the oblivious credential derivation protocol.",
+          "user_benefits": "Voters can prove eligibility using their existing Microsoft Authenticator wallet, receiving a verifiable credential that bridges to anonymous voting credentials without revealing identity at voting time.",
+          "technical_context": {
+            "implementation_type": "FastAPI sub-application",
+            "location": "Mounting into electionguard-api-python",
+            "endpoints": [
+              "/v1/vspace/auth/ - Anonymous credential issuance and presentation",
+              "/v1/vspace/entra/ - Verified ID callback handlers",
+              "/v1/vspace/audit/ - Credential-ballot binding verification"
+            ],
+            "entra_apis": [
+              {
+                "endpoint": "https://verifiedid.did.msidentity.com/v1.0/verifiableCredentials/createIssuanceRequest",
+                "purpose": "VC issuance during voter registration",
+                "phase": "Registration"
+              },
+              {
+                "endpoint": "https://verifiedid.did.msidentity.com/v1.0/verifiableCredentials/createPresentationRequest",
+                "purpose": "VC presentation during credential derivation",
+                "phase": "Credential Derivation"
+              },
+              {
+                "endpoint": "https://verifiedid.did.msidentity.com",
+                "purpose": "Admin API - Service provisioning, DID registration, contract management",
+                "phase": "Setup"
+              }
+            ],
+            "did_method": "did:web",
+            "did_location": "https://vspacevote.com/.well-known/did.json",
+            "custom_credential": "VoterEligibilityCredential",
+            "credential_claims": ["election_id", "precinct", "blinded_commitment"],
+            "oauth2_library": "MSAL Python",
+            "required_permission": "VerifiableCredential.Create.All"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-100 (SAAC Protocol)"],
+            "external_services": [
+              "Microsoft Entra Verified ID",
+              "Azure AD Premium P2 or Microsoft Entra Suite"
+            ],
+            "libraries": ["MSAL Python >= 1.24"],
+            "infrastructure": [
+              "Azure AD tenant with admin consent",
+              "DID document hosting infrastructure"
+            ],
+            "integration_requirements": ["F-010 (MongoDB Persistence)"]
+          },
+          "functional_requirements": [
+            {
+              "id": "F-104-RQ-001",
+              "description": "Issuance flow shall trigger VoterEligibilityCredential creation via Entra createIssuanceRequest API",
+              "acceptance_criteria": "Voter receives VC in Microsoft Authenticator wallet with correct claims (election ID, precinct, blinded commitment)",
+              "priority": "Must-Have",
+              "citation": "#225-identity-management-requirements-f-104"
+            },
+            {
+              "id": "F-104-RQ-002",
+              "description": "Presentation flow shall verify voter VC via Entra createPresentationRequest callback",
+              "acceptance_criteria": "Verified claims including blinded commitment are received at callback URL; invalid VCs are rejected",
+              "priority": "Must-Have",
+              "citation": "#225-identity-management-requirements-f-104"
+            },
+            {
+              "id": "F-104-RQ-003",
+              "description": "Oblivious credential derivation shall bridge Entra VC to SAAC anonymous credential",
+              "acceptance_criteria": "SAAC credential is correctly derived from blinded commitment in VC; Entra service cannot link VC to SAAC credential",
+              "priority": "Must-Have",
+              "citation": "#225-identity-management-requirements-f-104"
+            },
+            {
+              "id": "F-104-RQ-004",
+              "description": "DID document shall be resolvable at did:web well-known URL",
+              "acceptance_criteria": "https://vspacevote.com/.well-known/did.json resolves to valid DID document with election authority public keys",
+              "priority": "Must-Have",
+              "citation": "#225-identity-management-requirements-f-104"
+            },
+            {
+              "id": "F-104-RQ-005",
+              "description": "OAuth2 token acquisition shall use MSAL with VerifiableCredential.Create.All permission",
+              "acceptance_criteria": "Valid access tokens are acquired for all Entra API calls; token refresh is handled automatically",
+              "priority": "Must-Have",
+              "citation": "#225-identity-management-requirements-f-104"
+            }
+          ],
+          "validation_rules": [
+            {
+              "rule": "VC issuance only after identity verification",
+              "security_requirement": "Blinded commitment prevents Entra linkage"
+            },
+            {
+              "rule": "VC presentation only during credential derivation",
+              "security_requirement": "VC never presented to voting system"
+            },
+            {
+              "rule": "Credential derivation occurs pre-election day",
+              "security_requirement": "No cloud dependency on election day; Entra availability risk mitigated"
+            },
+            {
+              "rule": "Azure AD app with admin consent required",
+              "security_requirement": "Least-privilege API permissions"
+            }
+          ],
+          "performance_targets": {
+            "vc_issuance_latency": "< 2000 ms end-to-end including callback",
+            "vc_presentation_latency": "< 1500 ms including callback verification",
+            "credential_derivation_latency": "< 500 ms oblivious protocol completion"
+          },
+          "gate_criteria": "Entra sandbox issuance/presentation flows succeed. Oblivious credential derivation works. 100-voter simulation with live Entra VCs.",
+          "verification_method": "Entra sandbox integration tests (pytest)",
+          "sde_requirements": {
+            "pre_execution_secrets": [
+              "AZURE_ENTRA_TENANT_ID",
+              "AZURE_AD_APP_CLIENT_ID",
+              "AZURE_AD_APP_CLIENT_SECRET",
+              "ENTRA_VC_ISSUANCE_AUTHORITY",
+              "ENTRA_VC_PRESENTATION_AUTHORITY"
+            ],
+            "setup_actions": [
+              "Create Azure AD app registration with VerifiableCredential.Create.All permission",
+              "Obtain admin consent for the app",
+              "Configure Entra Verified ID service in tenant",
+              "Create VoterEligibilityCredential contract",
+              "Register DID document at did:web endpoint",
+              "Test VC issuance/presentation in sandbox"
+            ],
+            "timing_constraint": "All setup MUST complete before election day; credential derivation occurs pre-election"
+          }
+        }
+      ]
+    },
+    "user_applications": {
+      "description": "FastHTML Progressive Web Applications for voter-facing ballot marking and credential wallet management",
+      "citation": "#226-user-application-requirements-f-105-f-107",
+      "features": [
+        {
+          "id": "F-105",
+          "name": "vSpaceVote.com Voter-Facing PWA",
+          "category": "User Applications",
+          "priority": "High",
+          "status": "Proposed",
+          "phase": "Phase 2",
+          "trl": "4",
+          "citation": "#f-105-vspacevotecom-voter-facing-pwa",
+          "overview": "A Progressive Web Application built with FastHTML for ballot marking, credential presentation, and election participation. Deployed to Azure App Service with PWA capabilities (service worker, web manifest, offline caching of election manifest). Uses HTMX-based server-rendered partials (<2KB per interaction) for sequential, server-validated voter interactions.",
+          "business_value": "Enprises accessible, WCAG-compliant ballot marking interface that validates every voter action server-side against election rules and cryptographic constraints, eliminating client-side tampering risks.",
+          "user_benefits": "Voters can mark ballots from any device with a browser; accessibility features support screen readers and audio descriptions; tracking codes enable ballot verification.",
+          "technical_context": {
+            "framework": "FastHTML",
+            "runtime": "ASGI (Uvicorn + Starlette)",
+            "styling": "PicoCSS (WCAG 2.1 AA accessible)",
+            "interactivity": "HTMX (server-rendered HTML partials)",
+            "deployment": "Azure App Service Premium v3, Linux",
+            "auto_scaling_target": "100K concurrent voters per regional deployment",
+            "cdn": "Azure Front Door for DDoS protection",
+            "service_worker": "Cache-first for static, network-first for dynamic",
+            "csp_headers": "Same-origin scripts only - no inline JavaScript",
+            "routes": [
+              {
+                "path": "/",
+                "purpose": "Landing page with NLWeb natural language search",
+                "response_constraint": "N/A"
+              },
+              {
+                "path": "/auth/present",
+                "purpose": "Credential presentation trigger (invokes F-107 cross-origin flow)",
+                "response_constraint": "Credential flow latency"
+              },
+              {
+                "path": "/ballot/mark",
+                "purpose": "Ballot marking with HTMX partials per contest",
+                "response_constraint": "< 200 ms, < 2 KB"
+              },
+              {
+                "path": "/ballot/review",
+                "purpose": "Complete ballot review with plain-language summary and audio description",
+                "response_constraint": "< 200 ms"
+              },
+              {
+                "path": "/ballot/encrypt",
+                "purpose": "Server-side encryption, tracking code generation, cast/spoil choice",
+                "response_constraint": "< 200 ms + encryption time"
+              },
+              {
+                "path": "/ballot/confirm",
+                "purpose": "Tracking code display with QR code, link to public record",
+                "response_constraint": "< 200 ms"
+              }
+            ]
+          },
+          "dependencies": {
+            "prerequisite_features": [
+              "F-102 (Credential-to-Ballot Binding)",
+              "F-008 (Encryption Workflow)",
+              "F-108 (NLWeb Interface)"
+            ],
+            "external_services": [
+              "Azure App Service Premium v3",
+              "Azure Front Door",
+              "Azure Monitor + Application Insights"
+            ],
+            "libraries": [
+              "python-fasthtml >= 0.12",
+              "uvicorn >= 0.23",
+              "starlette >= 0.27"
+            ],
+            "integration_requirements": ["F-107 (Cross-Origin Communication)"]
+          },
+          "functional_requirements": [
+            {
+              "id": "F-105-RQ-001",
+              "description": "Ballot marking interface shall render all eligible contests with server-side validation of selection limits",
+              "acceptance_criteria": "Over-selections are rejected; under-selections produce warnings; UI updates via HTMX partials",
+              "priority": "Must-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            },
+            {
+              "id": "F-105-RQ-002",
+              "description": "PWA service worker shall cache election manifest for offline review while requiring server connection for all cryptographic operations",
+              "acceptance_criteria": "Cached manifest loads offline; ballot encryption, credential presentation, and nonce generation fail gracefully without server",
+              "priority": "Must-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            },
+            {
+              "id": "F-105-RQ-003",
+              "description": "Ballot review page shall present plain-language summary with accessibility-focused audio description",
+              "acceptance_criteria": "WCAG 2.1 AA compliance verified; screen reader navigation of all ballot choices",
+              "priority": "Must-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            },
+            {
+              "id": "F-105-RQ-004",
+              "description": "Tracking code display shall include QR code and link to public election record",
+              "acceptance_criteria": "Tracking code resolves to correct ballot in the published election record",
+              "priority": "Should-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            }
+          ],
+          "performance_targets": {
+            "htmx_partial_response": "< 200 ms",
+            "partial_size": "< 2 KB",
+            "offline_manifest_load": "< 500 ms",
+            "pwa_install": "Progressive enhancement - no mandatory app install"
+          },
+          "gate_criteria": "FastHTML skeleton deployed and functional. 100-voter simulation with live Entra VCs.",
+          "verification_method": "100-voter simulation with live Entra VCs; WCAG 2.1 AA accessibility audit",
+          "sde_requirements": {
+            "pre_execution_secrets": [
+              "AZURE_APP_SERVICE_VSPACEVOTE_NAME",
+              "AZURE_APP_SERVICE_VSPACEVOTE_RESOURCE_GROUP",
+              "AZURE_FRONT_DOOR_ENDPOINT"
+            ],
+            "setup_actions": [
+              "Create Azure App Service Premium v3 plan",
+              "Deploy FastHTML application container",
+              "Configure Azure Front Door with custom domain",
+              "Enable auto-scaling for 100K concurrent target",
+              "Deploy service worker and web manifest",
+              "Configure Application Insights dashboard"
+            ]
+          }
+        },
+        {
+          "id": "F-106",
+          "name": "vSpaceWallet.com Credential Wallet PWA",
+          "category": "User Applications",
+          "priority": "High",
+          "status": "Proposed",
+          "phase": "Phase 2",
+          "trl": "4",
+          "citation": "#f-106-vspacewalletcom-credential-wallet-pwa",
+          "overview": "A credential management PWA on a separate domain from vSpaceVote.com to enforce the same-origin security boundary between credential management and ballot operations. Handles credential receipt/storage (IndexedDB, encrypted), multi-holder credential share coordination, and credential lifecycle management. Manages the Entra Verified ID issuance callback flow and SAAC oblivious credential derivation.",
+          "business_value": "Separates credential management from voting operations via same-origin boundary, preventing ballot operations from accessing credential storage while enabling secure cross-origin credential presentation.",
+          "user_benefits": "Voters can manage their anonymous credentials in a dedicated wallet; multi-holder shares can be distributed across devices for theft resistance; credential lifecycle is visible and controllable.",
+          "technical_context": {
+            "framework": "FastHTML",
+            "runtime": "ASGI (Uvicorn + Starlette)",
+            "deployment": "Separate Azure App Service instance",
+            "storage": "Browser IndexedDB (encrypted with device-derived key)",
+            "same_origin_boundary": "vSpaceWallet.com domain separate from vSpaceVote.com",
+            "cross_origin_protocol": "F-107 postMessage with origin whitelist",
+            "credential_operations": [
+              "Entra VC issuance callback handling",
+              "SAAC oblivious credential derivation",
+              "Multi-holder BBS share splitting",
+              "Primary share encrypted storage",
+              "Secondary share delivery to backup device"
+            ]
+          },
+          "dependencies": {
+            "prerequisite_features": [
+              "F-100 (SAAC Protocol)",
+              "F-101 (Multi-Holder BBS)",
+              "F-104 (Entra VC Bridge)"
+            ],
+            "external_services": [
+              "Azure App Service Premium v3",
+              "Microsoft Entra Verified ID (callback handling)"
+            ],
+            "libraries": [
+              "python-fasthtml >= 0.12",
+              "IndexedDB (browser-native)"
+            ],
+            "integration_requirements": ["F-107 (Cross-Origin Communication)"]
+          },
+          "functional_requirements": [
+            {
+              "id": "F-106-RQ-001",
+              "description": "Credential storage shall use encrypted IndexedDB with device-derived key",
+              "acceptance_criteria": "Credential data is unreadable without device authentication; encrypted at rest",
+              "priority": "Must-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            },
+            {
+              "id": "F-106-RQ-002",
+              "description": "Multi-holder share coordination shall support threshold presentation protocol",
+              "acceptance_criteria": "Primary and secondary shares produce valid combined presentation",
+              "priority": "Must-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            },
+            {
+              "id": "F-106-RQ-003",
+              "description": "Credential lifecycle dashboard shall display status, expiration, and re-issuance options",
+              "acceptance_criteria": "All credential states (active, expired, revoked) are correctly displayed",
+              "priority": "Should-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            }
+          ],
+          "performance_targets": {
+            "indexeddb_encryption": "< 50 ms",
+            "credential_derivation": "< 500 ms oblivious protocol",
+            "share_splitting": "< 200 ms per operation"
+          },
+          "gate_criteria": "Credential receipt/storage functional. Credential lifecycle integration tests.",
+          "verification_method": "Credential lifecycle integration tests; IndexedDB encryption verification",
+          "sde_requirements": {
+            "pre_execution_secrets": [
+              "AZURE_APP_SERVICE_VSPACEWALLET_NAME",
+              "AZURE_APP_SERVICE_VSPACEWALLET_RESOURCE_GROUP"
+            ],
+            "setup_actions": [
+              "Create separate Azure App Service for wallet domain",
+              "Configure custom domain vSpaceWallet.com",
+              "Enable HTTPS with managed certificates",
+              "Configure Entra VC callback URL pointing to wallet instance"
+            ]
+          }
+        },
+        {
+          "id": "F-107",
+          "name": "Cross-Origin Communication Protocol",
+          "category": "User Applications",
+          "priority": "High",
+          "status": "Proposed",
+          "phase": "Phase 2",
+          "trl": "4",
+          "citation": "#f-107-cross-origin-communication-protocol",
+          "overview": "Mediates interaction between vSpaceVote.com and vSpaceWallet.com via a carefully designed cross-origin protocol. Supports same-browser flow (window.postMessage with origin whitelist) and cross-device flow (QR code-based challenge-response via authenticated WebSocket). Signed postMessage responses use credential-derived keys.",
+          "business_value": "Enables secure credential presentation across domains without violating same-origin security boundaries, supporting both same-browser and cross-device voting scenarios.",
+          "user_benefits": "Voters can present credentials from their wallet app while marking ballots in the voting app; cross-device fallback supports voting from one device while wallet is on another.",
+          "technical_context": {
+            "same_browser_flow": {
+              "method": "window.postMessage",
+              "security": "Origin whitelist (vSpaceVote.com and vSpaceWallet.com only)",
+              "sequence": [
+                "vSpaceVote opens vSpaceWallet in popup/iframe",
+                "vSpaceVote passes cryptographic challenge (random nonce bound to election ID and session)",
+                "vSpaceWallet receives challenge and generates credential presentation proof",
+                "vSpaceWallet returns signed postMessage response"
+              ]
+            },
+            "cross_device_flow": {
+              "method": "QR code challenge-response",
+              "channel": "Authenticated WebSocket relay",
+              "sequence": [
+                "vSpaceVote displays QR code containing challenge",
+                "vSpaceWallet device scans QR code",
+                "vSpaceWallet returns credential presentation via WebSocket",
+                "Server mediates the relay channel"
+              ],
+              "fallback_trigger": "When same-browser postMessage unavailable"
+            },
+            "signing": "Credential-derived keys for postMessage response signatures"
+          },
+          "dependencies": {
+            "prerequisite_features": [
+              "F-105 (vSpaceVote.com PWA)",
+              "F-106 (vSpaceWallet.com PWA)"
+            ],
+            "external_services": [],
+            "infrastructure": [
+              "WebSocket relay server (Azure App Service or AKS)"
+            ]
+          },
+          "functional_requirements": [
+            {
+              "id": "F-107-RQ-001",
+              "description": "postMessage protocol shall enforce origin whitelist (vSpaceVote.com and vSpaceWallet.com only)",
+              "acceptance_criteria": "Messages from non-whitelisted origins are silently dropped",
+              "priority": "Must-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            },
+            {
+              "id": "F-107-RQ-002",
+              "description": "Cross-device QR flow shall fall back when same-browser postMessage is unavailable",
+              "acceptance_criteria": "QR code containing challenge is scannable; credential presentation completes via WebSocket relay",
+              "priority": "Must-Have",
+              "citation": "#226-user-application-requirements-f-105-f-107"
+            }
+          ],
+          "security_rules": [
+            {
+              "rule": "Origin whitelist enforcement",
+              "implementation": "Event.origin check against allowed list"
+            },
+            {
+              "rule": "Challenge binding",
+              "implementation": "Nonce bound to election ID and session timestamp"
+            },
+            {
+              "rule": "Response signing",
+              "implementation": "Credential-derived keys for cryptographic signature"
+            },
+            {
+              "rule": "WebSocket authentication",
+              "implementation": "Session token validation on relay channel"
+            }
+          ],
+          "performance_targets": {
+            "postmessage_response": "< 50 ms total credential budget contribution",
+            "origin_check": "< 1 ms",
+            "qr_generation": "< 100 ms",
+            "websocket_relay": "< 200 ms round-trip"
+          },
+          "gate_criteria": "Cross-origin protocol functional. Cross-browser manual and automated tests.",
+          "verification_method": "Cross-browser manual and automated tests; origin whitelist enforcement tests",
+          "sde_requirements": {
+            "pre_execution_secrets": [],
+            "setup_actions": [
+              "Configure WebSocket relay service",
+              "Test cross-origin flows in multiple browsers",
+              "Verify QR code generation and scanning",
+              "Validate origin whitelist enforcement"
+            ]
+          }
+        }
+      ]
+    },
+    "conversational_ai": {
+      "description": "NLWeb Conversational Interfaces with MCP Server capability for agent interoperability",
+      "citation": "#f-108-nlweb-conversational-interfaces",
+      "features": [
+        {
+          "id": "F-108",
+          "name": "NLWeb Conversational Interfaces",
+          "category": "Conversational AI",
+          "priority": "Medium",
+          "status": "Proposed",
+          "phase": "Phase 2",
+          "trl": "4",
+          "citation": "#f-108-nlweb-conversational-interfaces",
+          "overview": "Two NLWeb instances provide conversational AI query capabilities over election data (vSpaceVote.com) and credential state (vSpaceWallet.com). Each instance simultaneously functions as a Model Context Protocol (MCP) server for agent interoperability. The vSpaceVote instance indexes election manifests, published records, tally results, and verification reports. The vSpaceWallet instance indexes credential types, issuance status, and wallet configuration.",
+          "business_value": "Enables voters, observers, journalists, and auditors to query election data and credential status using natural language. Positions both PWAs as first-class participants in the emerging agentic web.",
+          "user_benefits": "Natural language queries for election information; agent interoperability via MCP protocol; cryptographic provenance ensures response accuracy.",
+          "technical_context": {
+            "nlweb_instances": [
+              {
+                "name": "vSpaceVote NLWeb",
+                "domain": "vSpaceVote.com",
+                "indexed_content": ["Election manifests", "Published records", "Tally results", "Verification reports"],
+                "schema_org_types": ["Event", "VoteAction (custom)", "Report", "GovernmentOrganization"],
+                "custom_tools": ["BallotLookupTool", "TallyExplorerTool"]
+              },
+              {
+                "name": "vSpaceWallet NLWeb",
+                "domain": "vSpaceWallet.com",
+                "indexed_content": ["Credential types", "Issuance status", "Wallet configuration"],
+                "schema_org_types": ["DigitalDocument", "Action", "VerifiableCredential (custom)"],
+                "custom_tools": ["CredentialStatusTool"]
+              }
+            ],
+            "vector_store": "Azure AI Search",
+            "llm_backend": "Azure OpenAI Service",
+            "mcp_transport": "JSON over REST",
+            "shared_infrastructure": "Uvicorn ASGI process with FastHTML PWAs",
+            "rag_constraints": "Strict - 100% grounded in published election record",
+            "read_only_enforcement": "During active voting periods",
+            "provenance_hashing": "All responses include cryptographic provenance hashes"
+          },
+          "dependencies": {
+            "prerequisite_features": ["F-109 (Augmented Election Record)"],
+            "external_services": [
+              "Azure AI Search",
+              "Azure OpenAI Service",
+              "NLWeb reference implementation (github.com/microsoft/NLWeb)"
+            ],
+            "libraries": ["NLWeb Python package (MIT)"]
+          },
+          "functional_requirements": [
+            {
+              "id": "F-108-RQ-001",
+              "description": "NLWeb ask method shall return Schema.org-typed JSON responses grounded in indexed election record content",
+              "acceptance_criteria": "Every response item maps to a valid Schema.org type; no response contains information absent from the vector store",
+              "priority": "Must-Have",
+              "citation": "#227-conversational-and-agentic-interface-requirements-f-108"
+            },
+            {
+              "id": "F-108-RQ-002",
+              "description": "MCP server endpoint shall expose ask tool for agent interoperability",
+              "acceptance_criteria": "External MCP clients can discover and invoke the ask method; responses conform to NLWeb protocol specification",
+              "priority": "Must-Have",
+              "citation": "#227-conversational-and-agentic-interface-requirements-f-108"
+            },
+            {
+              "id": "F-108-RQ-003",
+              "description": "NLWeb shall operate in read-only mode during active voting periods",
+              "acceptance_criteria": "No state-changing operations (ballot casting, credential presentation) can be triggered via NLWeb queries",
+              "priority": "Must-Have",
+              "citation": "#227-conversational-and-agentic-interface-requirements-f-108"
+            },
+            {
+              "id": "F-108-RQ-004",
+              "description": "All NLWeb responses shall include cryptographic provenance hashes linking to source data items",
+              "acceptance_criteria": "Each response embeds a hash verifiable against the authentic election record content in the vector store",
+              "priority": "Should-Have",
+              "citation": "#227-conversational-and-agentic-interface-requirements-f-108"
+            },
+            {
+              "id": "F-108-RQ-005",
+              "description": "Custom tools (BallotLookupTool, TallyExplorerTool, CredentialStatusTool) shall resolve queries against published data only",
+              "acceptance_criteria": "BallotLookupTool resolves tracking codes; TallyExplorerTool navigates tally tree; CredentialStatusTool checks serial numbers without revealing voter identity",
+              "priority": "Should-Have",
+              "citation": "#227-conversational-and-agentic-interface-requirements-f-108"
+            }
+          ],
+          "security_constraints": [
+            {
+              "constraint": "Response grounding",
+              "implementation": "100% grounded in published election record; strict RAG constraints",
+              "requirement": "F-108-RQ-001"
+            },
+            {
+              "constraint": "Read-only enforcement",
+              "implementation": "No state-changing operations during voting windows",
+              "requirement": "F-108-RQ-003"
+            },
+            {
+              "constraint": "Rate limiting",
+              "implementation": "ASGI middleware layer (shared with FastHTML)",
+              "requirement": "F-108-RQ-003"
+            },
+            {
+              "constraint": "No voter identity in responses",
+              "implementation": "CredentialStatusTool reveals only serial number presence",
+              "requirement": "F-108-RQ-005"
+            },
+            {
+              "constraint": "Cryptographic provenance",
+              "implementation": "Each response embeds hash of source data items",
+              "requirement": "F-108-RQ-004"
+            }
+          ],
+          "performance_targets": {
+            "query_response": "< 500 ms for typical queries",
+            "vector_search": "< 100 ms",
+            "llm_inference": "< 300 ms",
+            "provenance_hash": "< 10 ms per response"
+          },
+          "gate_criteria": "NLWeb instances deployed with domain-specific config. Query accuracy validation against published record.",
+          "verification_method": "Query accuracy validation against published record; RAG constraint enforcement tests",
+          "sde_requirements": {
+            "pre_execution_secrets": [
+              "AZURE_OPENAI_ENDPOINT",
+              "AZURE_OPENAI_API_KEY",
+              "AZURE_AI_SEARCH_ENDPOINT",
+              "AZURE_AI_SEARCH_API_KEY"
+            ],
+            "setup_actions": [
+              "Provision Azure OpenAI Service with appropriate model deployment",
+              "Configure Azure AI Search index with Schema.org schema",
+              "Index election manifest and sample published records",
+              "Configure NLWeb instances with domain-specific tools",
+              "Test MCP server endpoint accessibility",
+              "Verify RAG constraint enforcement"
+            ],
+            "ai_safety_controls": [
+              "Strict RAG mode - no hallucination",
+              "Read-only during voting periods",
+              "Cryptographic provenance hashing",
+              "No decryption key access",
+              "No guardian share access",
+              "No voter identity data access"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "technology_stack": {
+    "citation": "#3-technology-stack",
+    "languages": {
+      "primary": "Python 3.9+",
+      "secondary": ["Rust (verifier)", "TypeScript (MCP clients)"],
+      "citation": "#311-language-to-component-mapping"
+    },
+    "python_frameworks": {
+      "citation": "#325-vspace-python-frameworks-and-libraries-proposed",
+      "web_framework": {
+        "name": "FastHTML",
+        "version": ">= 0.12",
+        "license": "Apache 2.0",
+        "runtime": "ASGI (Uvicorn + Starlette)",
+        "interactivity": "HTMX (server-rendered HTML partials)",
+        "css": "PicoCSS (built-in, WCAG 2.1 AA accessible)"
+      },
+      "dependencies": [
+        {"name": "fastapi", "version": ">= 0.100", "purpose": "REST API framework for electionguard-api-python extensions"},
+        {"name": "msal", "version": ">= 1.24", "purpose": "OAuth2 token acquisition for Microsoft Entra Verified ID"},
+        {"name": "uvicorn", "version": ">= 0.23", "purpose": "Production ASGI server shared between FastHTML and NLWeb"},
+        {"name": "starlette", "version": ">= 0.27", "purpose": "ASGI framework layer for middleware stack"},
+        {"name": "pycryptodome", "version": ">= 3.19", "purpose": "Cryptographic operations (P-256)"},
+        {"name": "cryptography", "version": ">= 43.0", "purpose": "TLS 1.3, X.509 certificate handling"}
+      ]
+    },
+    "external_services": {
+      "citation": "#34-third-party-services",
+      "entra_verified_id": {
+        "citation": "#341-microsoft-entra-verified-id-proposed",
+        "api_endpoints": [
+          "https://verifiedid.did.msidentity.com/v1.0/verifiableCredentials/createIssuanceRequest",
+          "https://verifiedid.did.msidentity.com/v1.0/verifiableCredentials/createPresentationRequest"
+        ],
+        "licensing": "Azure AD Premium P2 or Microsoft Entra Suite",
+        "did_method": "did:web"
+      },
+      "azure_openai": {
+        "citation": "#342-azure-openai-service-proposed",
+        "purpose": "RAG-based natural language queries over election data",
+        "constraints": [
+          "Strict RAG mode",
+          "Read-only during active voting periods",
+          "No access to decryption keys, guardian shares, or voter identity"
+        ]
+      },
+      "nlweb": {
+        "citation": "#343-nlweb-protocol-service-proposed",
+        "repository": "github.com/microsoft/NLWeb",
+        "license": "MIT",
+        "language": "Python",
+        "mcp_support": true
+      },
+      "azure_infrastructure": {
+        "citation": "#344-azure-infrastructure-services-proposed",
+        "services": [
+          {"name": "Azure App Service", "sku": "Premium v3, Linux", "purpose": "FastHTML PWA hosting"},
+          {"name": "Azure Kubernetes Service", "sku": "Standard", "purpose": "ElectionGuard API, NLWeb, credential issuer"},
+          {"name": "Azure Front Door", "sku": "Standard", "purpose": "Global CDN, DDoS protection, TLS termination"},
+          {"name": "Azure Monitor + Application Insights", "sku": "Standard", "purpose": "Observability with election-specific dashboards"},
+          {"name": "Azure Key Vault", "sku": "Standard", "purpose": "HSM-backed signing keys, Entra SP credentials, SAAC issuer parameters"},
+          {"name": "Azure AI Search", "sku": "Standard", "purpose": "Vector store backend for NLWeb instances"},
+          {"name": "Azure Cosmos DB", "api": "MongoDB API", "purpose": "Globally distributed election data"}
+        ]
+      }
+    }
+  },
+  "phase_gates": {
+    "citation": "#253-phase-gate-acceptance-summary",
+    "phases": [
+      {
+        "phase": "Phase 2",
+        "trl": "4",
+        "timeline": "Months 3-6",
+        "gate_conditions": "Entra sandbox issuance/presentation flows succeed. Oblivious credential derivation works. 100-voter simulation with live Entra VCs. FastHTML skeletons deployed.",
+        "features_covered": ["F-104", "F-105", "F-106", "F-107", "F-108"],
+        "verification_methods": [
+          "F-104: Entra sandbox integration tests (pytest)",
+          "F-105: 100-voter simulation with live Entra VCs",
+          "F-106: Credential lifecycle integration tests",
+          "F-107: Cross-browser manual and automated tests",
+          "F-108: Query accuracy validation against published record"
+        ]
+      }
+    ]
+  },
+  "constraints": {
+    "citation": "#262-constraints",
+    "system_constraints": [
+      {"id": "C-003", "constraint": "Deployment assumes Microsoft Azure infrastructure", "rationale": "Architecture depends on Azure App Service, AKS, Cosmos DB, Key Vault, AI Search, and Entra"},
+      {"id": "C-004", "constraint": "Pre-release status — not for production elections", "rationale": "Repository README explicitly states this limitation"},
+      {"id": "C-005", "constraint": "SAFE-D compliance", "rationale": "Safe, Accountable, Fair, Explainable, Data-governed as foundational design constraints"},
+      {"id": "C-006", "constraint": "MIT license alignment", "rationale": "Consistent with ElectionGuard ecosystem licensing"}
+    ],
+    "augmented_specific_constraints": [
+      {"constraint": "All Azure credentials must be provided before ralph_loop begins", "rationale": "Prevents blocking on authentication during execution"},
+      {"constraint": "Entra Verified ID operations must complete pre-election day", "rationale": "Temporal separation - no cloud dependency on election day"},
+      {"constraint": "NLWeb operates read-only during voting periods", "rationale": "Prevents AI-driven state changes during active voting"}
+    ]
+  },
+  "external_references": {
+    "citation": "#27-references",
+    "papers": [
+      {"title": "SAAC Paper", "source": "Chairattana-Apirom et al., ePrint 2025/513 (CRYPTO 2025)"},
+      {"title": "Multi-Holder BBS Paper", "source": "Flamini, Lee, Lysyanskaya, ePrint 2024/1874 (CRYPTO 2025)"}
+    ],
+    "repositories": [
+      {"name": "ElectionGuard Core2", "url": "https://github.com/Election-Tech-Initiative/electionguard-core2"},
+      {"name": "NLWeb", "url": "https://github.com/microsoft/NLWeb"},
+      {"name": "vSPACE", "url": "https://github.com/vSpaceVote/vSPACE"}
+    ],
+    "documentation": [
+      {"name": "Microsoft Entra Verified ID", "url": "https://learn.microsoft.com/en-us/entra/verified-id/"},
+      {"name": "FastHTML", "url": "https://fastht.ml/"},
+      {"name": "vSPACE PRD v1.1", "date": "7 March 2026"}
+    ],
+    "standards": [
+      {"name": "ElectionGuard Specification 1.1.0"},
+      {"name": "W3C Verifiable Credentials"},
+      {"name": "W3C DID (did:web method)"},
+      {"name": "Schema.org"},
+      {"name": "MCP (Model Context Protocol)"},
+      {"name": "WCAG 2.1 AA"}
+    ]
+  }
+}
