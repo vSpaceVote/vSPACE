@@ -37,9 +37,18 @@ HASH_PREFIX_SAAC_ISSUANCE: bytes = b"vSPACE_SAAC_ISSUANCE_V1\x00"
 # Citation: README.md#f-100-rq-002
 HASH_PREFIX_SAAC_PRESENTATION: bytes = b"vSPACE_SAAC_PRESENTATION_V1\x00"
 
+# SAAC params hash prefix (for issuer parameters)
+HASH_PREFIX_SAAC_PARAMS: bytes = b"vSPACE_SAAC_PARAMS_V1\x00"
+
+# SAAC credential hash prefix
+HASH_PREFIX_SAAC_CRED: bytes = b"vSPACE_SAAC_CRED_V1\x00"
+
 # Credential-to-ballot binding commitment hash prefix
 # Citation: README.md#f-102-rq-001
 HASH_PREFIX_BINDING_COMMITMENT: bytes = b"vSPACE_BINDING_COMMITMENT_V1\x00"
+
+# Binding challenge hash prefix (for Fiat-Shamir)
+HASH_PREFIX_BINDING_CHALLENGE: bytes = b"vSPACE_BINDING_CHALLENGE_V1\x00"
 
 # VRF serial number derivation hash prefix
 # Citation: README.md#f-103-rq-001

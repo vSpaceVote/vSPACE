@@ -201,7 +201,7 @@ class ProofGenerator:
 
         # Compute proof hash for integrity
         proof_hash = hashlib.sha256(
-            commitment["commitment_reference"].encode()
+            commitment["commitment_id"].encode()
             + challenge_bytes
             + z1.to_bytes(32, "big")
             + z2.to_bytes(32, "big")
@@ -244,13 +244,13 @@ def verify_binding_proof(
     Performance Target: <50ms
     """
     try:
-        # Parse values
-        g = int.from_hex(commitment["generator_g"], "big") % P256_ORDER
-        h = int.from_hex(commitment["generator_h"], "big") % P256_ORDER
-        C = int.from_hex(commitment["commitment_value"], "big") % P256_ORDER
-        c = int.from_hex(proof["challenge"], "big") % P256_ORDER
-        z1 = int.from_hex(proof["response_r"], "big") % P256_ORDER
-        z2 = int.from_hex(proof["response_s"], "big") % P256_ORDER
+        # Parse values using proper hex decoding
+        g = int.from_bytes(bytes.fromhex(commitment["generator_g"]), "big") % P256_ORDER
+        h = int.from_bytes(bytes.fromhex(commitment["generator_h"]), "big") % P256_ORDER
+        C = int.from_bytes(bytes.fromhex(commitment["commitment_value"]), "big") % P256_ORDER
+        c = int.from_bytes(bytes.fromhex(proof["challenge"]), "big") % P256_ORDER
+        z1 = int.from_bytes(bytes.fromhex(proof["response_r"]), "big") % P256_ORDER
+        z2 = int.from_bytes(bytes.fromhex(proof["response_s"]), "big") % P256_ORDER
     except (ValueError, TypeError):
         return False
 
