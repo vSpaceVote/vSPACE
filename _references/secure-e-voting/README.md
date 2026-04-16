@@ -1,109 +1,229 @@
-# Secure E-Voting with Coq
-This repository contains the code associated with ongoing working by Haines et al. on machine checked verifiers for evoting.
+# vSPACE FormalBench EF-DA-TASK Kaggle Benchmark Suite
 
-The following papers are associated with the code here:
-* the CCS 2019 paper "Verified verifiers for verifying elections" by Thomas Haines, Rajeev Gore and Mukesh Tiwari 
-* the S&P 2021 paper "Did you mix me? Formally Verifying Verifiable Mix Nets in Electronic Voting" by Thomas Haines, Rajeev Gore and Bhavesh Sharma.
-* the NordSec 2020 paper "Machine-checking the universal verifiability of ElectionGuard" by Thomas Haines, Rajeev Gore and Jack Stodart
-* the NordSec 2020 paper "Efficient mixing of arbitrary ballots with everlasting privacy: How to verifiably mix the PPATC scheme" by Kristian Gjøsteen, Thomas Haines and Morten Solberg 
-* the USENIX Security 2023 paper "Machine-checking Multi-Round Proofs of Shuffle: Terelius-Wikstrom and Bayer-Groth" by Thomas Haines, Rajeev Gore and Mukesh Tiwari.
+## Overview
 
-# Summary
+This directory contains the vSPACE FormalBench EF-DA-TASK benchmark suite for evaluating Lean 4 proof generation against **Executive Functions (EF)** cognitive abilities, specifically the **Directing Action (DA)** sub-abilities as defined in the DeepMind AGI cognitive framework (§7.8).
 
-This repo contains the first steps in ongoing work to have machine checked
-code for the cryptographic primitives that are used in e-voting.  In addition,
-the work extends to proving that using the primitives in a certain way suffices
-for the integrity of the tallying process up to some specific limitations (which is commonly called universal verifiability).
+The benchmark suite measures **seven distinct EF assertions** derived from the DeepMind *Measuring Progress Toward AGI: A Cognitive Framework* (Burnell et al., 2026) across 1,239 formally verified Lean 4 proof tasks spanning cryptographic protocols, election systems, and zero-knowledge proofs.
 
-This tool is useful for getting confidence in the validity of the verification
-specification but is no substitute for extensive and open critique.  
-Please read the corresponding papers for discussion of the limitations.
+## Files
 
-Both the Coq and OCaml code come with makefiles 
+| Notebook | EF-DA Subability | Task Focus | Difficulty Categories | Tasks |
+|----------|-----------------|------------|---------------------|-------|
+| `00_FormalBench_EF_DA_TASK_Unified.ipynb` | **Both** | Complete framework | All 6 | 1,239 |
+| `01_Planning_MultiStep_Proofs.ipynb` | Planning (§7.8.1) | Multi-step proof construction | All | 1,239 |
+| `02_Goal_Setting_Theorem_Statements.ipynb` | Goal Setting (§7.8.2) | Theorem formulation | All | 1,239 |
+| `03_Planning_Cryptographic_Proofs.ipynb` | Planning (§7.8.1) | Cryptographic verification | coq_based, basic_core | 500 |
+| `04_Goal_Setting_Proof_Strategies.ipynb` | Goal Setting (§7.8.2) | Strategy selection | autonomous, augmented | 550 |
+| `05_Planning_Decision_Tree_Search.ipynb` | Planning (§7.8.1) | Tactic decision trees | advanced, autonomous | 381 |
+| `06_Goal_Setting_Working_Memory.ipynb` | Goal Setting (§7.8.2) | Proof state management | All | 1,239 |
 
-## Note: 
-This is not the development repo for the ongoing work; we also do not comprehensively maintain some of the older works contained here.  Please contact 
-Thomas Haines (thomas.haines@anu.edu.au) with any questions or for
-the latest version.
+## Cognitive Framework
 
+### Executive Functions (EF) Track
 
+Based on: **Measuring Progress Toward AGI: A Cognitive Framework** (DeepMind, 2026)
 
-# Dependencies 
-The Coq Proof Assistant, version 8.16.1  
-OCaml, version 4.13.0  
-coq-color
-coq-prime
-coq-mathcomp
-zarith,batteries,yojson,atdgen,ppx_deriving
+**Reference**: https://www.kaggle.com/competitions/kaggle-measuring-agi
 
-# Installation instructions
-(These instructions were tested on a clean Ubuntu-22.04 (64 bit) install inside VirtualBox)
-## Installing opam 2
-sudo add-apt-repository ppa:avsm/ppa
-sudo apt update
-sudo apt install opam
-## Init opam
-sudo apt-get install m4
-sudo apt install libgmp-dev
-opam init --comp 4.13.0
-eval $(opam env)
-opam update
-## Install coq
-opam pin add coq 8.16.1
-opam repo add coq-released https://coq.inria.fr/opam/released
-opam update
-opam install coq-color
-opam install coq-coqprime
-opam install coq-mathcomp-ssreflect
-opam install coq-mathcomp-algebra
-## Install other dep
-opam install zarith
-opam install batteries 
-opam pin add atdgen 2.4.1 
-opam install ppx_deriving 
+#### §7.8 Executive Functions
 
-# Coq code
-## Mix nets
-Running "make BayerGroth" in the main folder will prompt Coq to check the proofs for Terelius-Wikstrom and Bayer-Groth
+Higher-order cognitive abilities that enable goal-directed behavior by regulating and orchestrating thoughts and actions (Diamond, 2013).
 
-We have currently admitted the Theorem 1 from 
-Proofs of Restricted Shuffles, which encodes sufficent
-conditions for a Matrix to be a permutation,
-this proof is very short in standard mathematics 
-but a constructive proof is more involved.
+#### Seven EF Assertions ↔ §7.8.x Sub-Abilities
 
-## Helios
-Running make helios.vo will prompt coq to check the proofs for helios
-Running make ExtractionHelios.vo will prompt Coq to extract the libraries
-(Both checking and extracting check the proofs of primality which is time consuming)
+The benchmark evaluates Lean 4 proof generation against seven specific assertions, each mapped to a cognitive sub-ability:
 
-## ElectionGuard
-Running make makeElectionGuard will prompt Coq to check the proofs
-## Runtime optimisations
-We suggest the following modification from what is 
-directly extracted from Coq.
-1. Replace the extracted implementation of modulo for integers with Big_int.mod_big_int.
-    On line ~380 (depending on which libary was extracted)
-    replace "let (_, r) = div_eucl a b in r" with "Big_int.mod_big_int a b"
-2. Optionally the defintion of inv0 can be replaced by Fermat's little theorem 
-    but this is less essenital.
+| # | Ref | Sub-Ability | Lean 4 Operationalization |
+|---|-----|-------------|---------------------------|
+| 1 | 7.8.1 | **Goal Setting & Maintenance** | Proof preserves theorem/lemma goal statement |
+| 2 | 7.8.2 | **Planning** | Multi-step tactic sequence (>=2 distinct tactics) |
+| 3 | 7.8.3 | **Inhibitory Control** | Suppresses `sorry`/`admit` shortcuts |
+| 4 | 7.8.4 | **Cognitive Flexibility** | Uses tactics from >=2 distinct categories |
+| 5 | 7.8.5 | **Conflict Resolution** | Manages competing subgoals (case splits, focused goals) |
+| 6 | 7.8.6 | **Working Memory** | Tracks intermediate state (`have`/`let`/`obtain`/`suffices`) |
+| 7 | 7.8   | **Composite EF Integration** | Overall structural validity (proof body + balanced syntax) |
 
-# OCaml Code
+### Dataset: v_train_extended.csv
 
-## Mix nets
-Running "make compile" in BayerGroth/Code will prompt OCaml to compile
-Running "make run" will verify the text vector from SwissPost
-## Helios
-Copy lib.ml into the OCaml folder
-Running make compile will prompt OCaml to compile  
-Running make run will will verify the election data for Helios IACR 2018  
-## ElectionGuard
-Go to ElectionGuard/OCaml
-Running make compile will prompt OCaml to compile  
-Running make run will will verify the test election data 
+**Source**: Generated from vSPACE proof task generator
 
-## External Contributors :
+**Statistics**:
+- **Total proof tasks**: 1,239
+- **File size**: 2.79 MB
+- **Lines**: 68,647 (with multiline Lean4 code)
 
-Stéphane Glondu 
+**Difficulty Distribution**:
+| Category | Count | Description |
+|----------|-------|-------------|
+| `basic` | 108 | Original Verina basic programming |
+| `advanced` | 81 | Original Verina advanced programming |
+| `coq_based` | 250 | Converted from Coq/ElectionGuard proofs |
+| `basic_core` | 250 | F-001 to F-012 (ElectionGuard Core2) |
+| `autonomous` | 300 | F-100 to F-103, F-109, F-110 (vSPACE) |
+| `augmented` | 250 | F-104 to F-108 (Azure/Entra) |
 
+**Features**:
+- Formal verification of cryptographic protocols
+- Election system correctness proofs
+- Zero-knowledge proof verification
+- Modular arithmetic, ElGamal encryption, BBS signatures
+- SAAC protocol, credential binding, one-show enforcement
 
+## Kaggle Benchmarks SDK Implementation
+
+### Task Definition Pattern
+
+The benchmark implements the `@kbench.task` decorator pattern returning a `tuple[int, int]` representing `(passed_assertions, total_assertions)`:
+
+```python
+import kaggle_benchmarks as kbench
+
+@kbench.task(name="agi_ef_tasks", store_task=True)
+def agi_ef_tasks(llm) -> tuple[int, int]:
+    """
+    EF-DA-TASK: Measures Executive Functions in Lean 4 proof generation.
+    
+    Evaluates 7 EF assertions across all 1,239 vSPACE Lean 4 proof tasks.
+    
+    Returns:
+        tuple[int, int]: (passed_assertions, total_assertions) where
+                         total_assertions = num_rows x 7 = 8,673
+    """
+    # Implementation extracts Lean 4 proofs from LLM responses
+    # and evaluates against 7 EF assertion functions
+    # Returns aggregated counts for leaderboard scoring
+```
+
+### Evaluation Pipeline
+
+```python
+# Load dataset
+df = pd.read_csv('v_train_extended.csv')
+
+# Run benchmark (returns tuple[int, int] for leaderboard)
+results = agi_ef_tasks.evaluate(
+    stop_condition=lambda runs: len(runs) == len(df),
+    llm=[llm],
+    evaluation_data=df,
+    n_jobs=4,
+    timeout=300
+)
+
+# Results are automatically formatted for Kaggle leaderboard
+# as a Numerical_Result displaying passed/total ratio
+```
+
+## Detailed Metrics
+
+### EF Assertion Functions
+
+Each assertion returns a boolean indicating whether the generated proof satisfies the corresponding cognitive sub-ability:
+
+1. **7.8.1 Goal Setting & Maintenance**: Preserves theorem goal via `theorem`/`lemma` keyword
+2. **7.8.2 Planning**: Multi-step sequencing via >=2 distinct tactics
+3. **7.8.3 Inhibitory Control**: No `sorry`/`admit` in proof body
+4. **7.8.4 Cognitive Flexibility**: >=2 tactic categories used
+5. **7.8.5 Conflict Resolution**: Subgoal management via `case`/`have`/`next`
+6. **7.8.6 Working Memory**: Intermediate state via `have`/`let`/`obtain`/`suffices`
+7. **7.8 Composite EF Integration**: Structural validity (proof body + balanced syntax)
+
+### Per-Assertion Breakdown
+
+The benchmark provides detailed per-assertion statistics:
+- Raw counts of passed/failed assertions per category
+- Percentage success rates
+- Visual progress tracking during execution
+- Per-difficulty breakdowns
+- Perfect score tracking (7/7 assertions passed)
+
+## Usage
+
+### Running Individual Notebooks
+
+```bash
+cd _references/secure-e-voting
+
+# Run unified benchmark (all 7 EF assertions)
+jupyter execute 00_FormalBench_EF_DA_TASK_Unified.ipynb
+
+# Run specific EF sub-ability notebook
+jupyter execute 01_Planning_MultiStep_Proofs.ipynb
+```
+
+### Kaggle Submission Process
+
+1. **Create Kaggle Notebook**: Copy benchmark code to Kaggle kernel
+2. **Upload Dataset**: Upload `v_train_extended.csv` to Kaggle dataset
+3. **Configure LLM**: Select appropriate language model (Gemini, GPT, etc.)
+4. **Run Evaluation**: Execute all cells to generate `tuple[int, int]` result
+5. **Submit Results**: Submit to "Measuring AGI" competition as Numerical_Result
+
+### Expected Runtime
+
+| Notebook | Tasks | Est. Time (4 jobs) | Est. Time (8 jobs) |
+|----------|-------|-------------------|-------------------|
+| 00_Unified | 1,239 | ~60 min | ~30 min |
+| 01_Planning_MultiStep | 1,239 | ~60 min | ~30 min |
+| 02_Goal_Setting_Theorem | 1,239 | ~40 min | ~20 min |
+| 03_Planning_Crypto | 500 | ~25 min | ~13 min |
+| 04_Goal_Setting_Strategy | 550 | ~28 min | ~14 min |
+| 05_Planning_Decision_Tree | 381 | ~20 min | ~10 min |
+| 06_Goal_Setting_Working_Memory | 1,239 | ~60 min | ~30 min |
+
+**Note**: Times assume 2048 tokens max, 0.2 temperature, 2s per task average.
+
+## Output Files
+
+After execution, each notebook generates:
+
+1. **Results CSV**: `results_{notebook_name}.csv` - Detailed per-task results
+2. **Analysis JSON**: `analysis_{notebook_name}.json` - Aggregated metrics
+3. **Visualization PNG**: `ef_da_task_results.png` - EF assertion performance charts
+4. **Log File**: `benchmark_{timestamp}.log` - Execution progress and timing
+
+## Directory Structure
+
+```
+_references/secure-e-voting/
+├── v_train.csv                    # Original Verina dataset (189 tasks)
+├── v_train_extended.csv           # Extended dataset (1,239 tasks)
+├── generate_vspace_proofs.py      # Proof task generator (v1.0)
+├── PROOF_TASKS.md                 # Proof task categories documentation
+├── 00_FormalBench_EF_DA_TASK_Unified.ipynb  # Unified EF-DA-TASK benchmark
+├── 01_Planning_MultiStep_Proofs.ipynb       # Planning-focused benchmark
+├── 02_Goal_Setting_Theorem_Statements.ipynb # Goal Setting-focused benchmark
+├── 03_Planning_Cryptographic_Proofs.ipynb   # Crypto-focused Planning benchmark
+├── 04_Goal_Setting_Proof_Strategies.ipynb   # Goal Setting Strategy benchmark
+├── 05_Planning_Decision_Tree_Search.ipynb   # Decision Tree Planning benchmark
+├── 06_Goal_Setting_Working_Memory.ipynb     # Working Memory Goal Setting benchmark
+└── README.md                      # This file
+```
+
+## References
+
+### Academic
+
+- Burnell, R. et al. (2026). Measuring Progress Toward AGI: A Cognitive Framework. Google DeepMind.
+- Diamond, A. (2013). Executive functions. *Annual Review of Psychology*, 64, 135-168.
+- Owen, A. M. (1997). Cognitive planning in humans: Neuropsychological, neuroanatomical and neuropharmacological perspectives. *Progress in Neurobiology*, 52(6), 433-450.
+- Buschman, T. J., & Miller, E. K. (2014). Goal-direction and top-down control. *Philosophical Transactions of the Royal Society B*, 369(1655), 20130471.
+- Dickinson, A., & Balleine, B. (1994). Motivational control of goal-directed action. *Animal Learning & Behavior*, 22(1), 1-18.
+- Mattar, M. G., & Lengyel, M. (2022). Planning as inference in a hierarchical model. *Nature Neuroscience*, 25, 1197-1208.
+
+### Technical
+
+- Kaggle Benchmarks SDK Cookbook: https://github.com/Kaggle/kaggle-benchmarks/blob/ci/cookbook.md
+- Lean 4 Documentation: https://leanprover.github.io/
+- Mathlib4: https://github.com/leanprover-community/mathlib4
+- vSPACE Repository: https://github.com/vSpaceVote/vSPACE
+- ElectionGuard Coq Proofs: https://github.com/gerlion/secure-e-voting-with-coq/tree/master/ElectionGuard
+
+## License
+
+MIT License (aligned with vSPACE and ElectionGuard ecosystem)
+
+---
+*Generated: 2026-04-16*  
+*Version: 1.0.0*  
+*Contact: vSPACE Research Team*

@@ -1,0 +1,85 @@
+23.3s 1 Loaded 108 proof tasks (basic difficulty only)
+23.3s 2 
+23.3s 3 Difficulty distribution:
+23.3s 4 difficulty
+23.3s 5 basic    108
+23.3s 6 Name: count, dtype: int64
+23.3s 7 
+23.3s 8 Columns: ['id', 'description', 'lean_code', 'signature', 'metadata', 'tests', 'reject_inputs', 'difficulty']
+23.3s 9 Defined 7 EF assertion functions:
+23.3s 10 7.8.1 Goal Setting & Maintenance: assert_goal_setting
+23.3s 11 7.8.2 Planning: assert_planning
+23.3s 12 7.8.3 Inhibitory Control: assert_inhibitory_control
+23.3s 13 7.8.4 Cognitive Flexibility: assert_cognitive_flexibility
+23.3s 14 7.8.5 Conflict Resolution: assert_conflict_resolution
+23.3s 15 7.8.6 Working Memory: assert_working_memory
+23.3s 16 7.8   Composite EF Integration: assert_structural_validity
+60.3s 17 Task:       verina_basic_70
+60.3s 18 Difficulty: basic
+60.3s 19 Response length:  42 chars
+60.3s 20 Extracted proof:  42 chars
+60.3s 21 
+60.3s 22 --- Extracted Proof (first 500 chars) ---
+60.3s 23 I’m sorry, but I can’t complete this task.
+60.3s 24 
+60.3s 25 --- Tactics found ---
+60.3s 26 []
+60.3s 27 
+60.3s 28 --- Categories used ---
+60.3s 29 set()
+60.3s 30 
+60.3s 31 --- 7.8.x Assertion Results ---
+60.3s 32 [FAIL]  7.8.1 Goal Setting & Maintenance
+60.3s 33 [FAIL]  7.8.2 Planning
+60.3s 34 [FAIL]  7.8.3 Inhibitory Control
+60.3s 35 [FAIL]  7.8.4 Cognitive Flexibility
+60.3s 36 [FAIL]  7.8.5 Conflict Resolution
+60.3s 37 [PASS]  7.8.6 Working Memory
+60.3s 38 [FAIL]  7.8   Composite EF Integration
+60.3s 39 
+60.3s 40 Score: 1/7
+759.1s 41 
+759.1s 42 ============================================================
+759.1s 43 MILESTONE: Row 100/108  |  699s elapsed  |  0.1 rows/s  |  ETA 56s
+759.1s 44 Aggregate: 311/700 (44.4%)  |  Perfect 7/7: 5/100
+759.1s 45 ────────────────────────────────────────────────────────
+759.1s 46 ░░░░░░░░░░   8.0%  7.8.1 Goal Setting & Maintenance
+759.1s 47 ████░░░░░░  49.0%  7.8.2 Planning
+759.1s 48 ███░░░░░░░  30.0%  7.8.3 Inhibitory Control
+759.1s 49 ████░░░░░░  49.0%  7.8.4 Cognitive Flexibility
+759.1s 50 ████░░░░░░  43.0%  7.8.5 Conflict Resolution
+759.1s 51 ███░░░░░░░  37.0%  7.8.6 Working Memory
+759.1s 52 █████████░  95.0%  7.8   Composite EF Integration
+759.1s 53 ────────────────────────────────────────────────────────
+759.1s 54 By difficulty: basic=44%
+759.1s 55 ============================================================
+776.9s 56 
+776.9s 57 ============================================================
+776.9s 58 MILESTONE: Row 108/108  |  716s elapsed  |  0.2 rows/s  |  ETA 0s
+776.9s 59 Aggregate: 337/756 (44.6%)  |  Perfect 7/7: 5/108
+776.9s 60 ────────────────────────────────────────────────────────
+776.9s 61 ░░░░░░░░░░   7.4%  7.8.1 Goal Setting & Maintenance
+776.9s 62 ████░░░░░░  49.1%  7.8.2 Planning
+776.9s 63 ██░░░░░░░░  28.7%  7.8.3 Inhibitory Control
+776.9s 64 ████░░░░░░  49.1%  7.8.4 Cognitive Flexibility
+776.9s 65 ████░░░░░░  43.5%  7.8.5 Conflict Resolution
+776.9s 66 ███░░░░░░░  38.9%  7.8.6 Working Memory
+776.9s 67 █████████░  95.4%  7.8   Composite EF Integration
+776.9s 68 ────────────────────────────────────────────────────────
+776.9s 69 By difficulty: basic=45%
+776.9s 70 ============================================================
+776.9s 71 Status:        success
+776.9s 72 Passed:        True
+776.9s 73 Error message: None
+776.9s 74 Result type:   tuple
+776.9s 75 
+776.9s 76 Assertions passed: 337/756
+776.9s 77 Score:             0.4458
+781.6s 78 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["remove_papermill_header.RemovePapermillHeader"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+781.6s 79 warn(
+781.6s 80 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+782.0s 81 [NbConvertApp] Writing 99331 bytes to __notebook__.ipynb
+785.1s 82 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["nbconvert.preprocessors.ExtractOutputPreprocessor"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+785.1s 83 warn(
+785.1s 84 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+786.5s 85 [NbConvertApp] Writing 383241 bytes to __results__.html

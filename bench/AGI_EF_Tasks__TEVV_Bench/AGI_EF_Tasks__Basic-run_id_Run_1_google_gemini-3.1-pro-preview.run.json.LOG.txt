@@ -1,0 +1,108 @@
+24.5s 1 Loaded 108 proof tasks (basic difficulty only)
+24.5s 2 
+24.5s 3 Difficulty distribution:
+24.5s 4 difficulty
+24.5s 5 basic    108
+24.5s 6 Name: count, dtype: int64
+24.5s 7 
+24.5s 8 Columns: ['id', 'description', 'lean_code', 'signature', 'metadata', 'tests', 'reject_inputs', 'difficulty']
+24.5s 9 Defined 7 EF assertion functions:
+24.5s 10 7.8.1 Goal Setting & Maintenance: assert_goal_setting
+24.5s 11 7.8.2 Planning: assert_planning
+24.5s 12 7.8.3 Inhibitory Control: assert_inhibitory_control
+24.5s 13 7.8.4 Cognitive Flexibility: assert_cognitive_flexibility
+24.5s 14 7.8.5 Conflict Resolution: assert_conflict_resolution
+24.5s 15 7.8.6 Working Memory: assert_working_memory
+24.5s 16 7.8   Composite EF Integration: assert_structural_validity
+232.8s 17 Task:       verina_basic_70
+232.8s 18 Difficulty: basic
+232.8s 19 Response length:  2809 chars
+232.8s 20 Extracted proof:  2796 chars
+232.8s 21 
+232.8s 22 --- Extracted Proof (first 500 chars) ---
+232.8s 23 -- !benchmark @start import type=solution
+232.8s 24 
+232.8s 25 -- !benchmark @end import
+232.8s 26 
+232.8s 27 -- !benchmark @start solution_aux
+232.8s 28 
+232.8s 29 -- !benchmark @end solution_aux
+232.8s 30 
+232.8s 31 -- !benchmark @start precond_aux
+232.8s 32 
+232.8s 33 -- !benchmark @end precond_aux
+232.8s 34 @[reducible, simp]
+232.8s 35 def LinearSearch3_precond (a : Array Int) (P : Int -> Bool) : Prop :=
+232.8s 36 -- !benchmark @start precond
+232.8s 37 ∃ i, i < a.size ∧ P (a[i]!)
+232.8s 38 -- !benchmark @end precond
+232.8s 39 
+232.8s 40 
+232.8s 41 -- !benchmark @start code_aux
+232.8s 42 
+232.8s 43 -- !benchmark @end code_aux
+232.8s 44 
+232.8s 45 
+232.8s 46 def LinearSearch3 (a : Array Int) (P : Int -> Bool) (h_
+232.8s 47 
+232.8s 48 --- Tactics found ---
+232.8s 49 ['intro', 'exact', 'refine', 'rw', 'subst', 'simp', 'omega', 'rcases', 'have', 'let']
+232.8s 50 
+232.8s 51 --- Categories used ---
+232.8s 52 {'rewriting', 'introduction', 'destruction', 'hypothesis', 'simplification', 'application'}
+232.8s 53 
+232.8s 54 --- 7.8.x Assertion Results ---
+232.8s 55 [PASS]  7.8.1 Goal Setting & Maintenance
+232.8s 56 [PASS]  7.8.2 Planning
+232.8s 57 [PASS]  7.8.3 Inhibitory Control
+232.8s 58 [PASS]  7.8.4 Cognitive Flexibility
+232.8s 59 [PASS]  7.8.5 Conflict Resolution
+232.8s 60 [PASS]  7.8.6 Working Memory
+232.8s 61 [PASS]  7.8   Composite EF Integration
+232.8s 62 
+232.8s 63 Score: 7/7
+7267.4s 64 
+7267.4s 65 ============================================================
+7267.4s 66 MILESTONE: Row 100/108  |  7034s elapsed  |  0.0 rows/s  |  ETA 563s
+7267.4s 67 Aggregate: 311/700 (44.4%)  |  Perfect 7/7: 38/100
+7267.4s 68 ────────────────────────────────────────────────────────
+7267.4s 69 ████░░░░░░  46.0%  7.8.1 Goal Setting & Maintenance
+7267.4s 70 ████░░░░░░  45.0%  7.8.2 Planning
+7267.4s 71 ████░░░░░░  41.0%  7.8.3 Inhibitory Control
+7267.4s 72 ████░░░░░░  45.0%  7.8.4 Cognitive Flexibility
+7267.4s 73 ████░░░░░░  42.0%  7.8.5 Conflict Resolution
+7267.4s 74 ████░░░░░░  46.0%  7.8.6 Working Memory
+7267.4s 75 ████░░░░░░  46.0%  7.8   Composite EF Integration
+7267.4s 76 ────────────────────────────────────────────────────────
+7267.4s 77 By difficulty: basic=44%
+7267.4s 78 ============================================================
+7268.1s 79 
+7268.1s 80 ============================================================
+7268.1s 81 MILESTONE: Row 108/108  |  7035s elapsed  |  0.0 rows/s  |  ETA 0s
+7268.1s 82 Aggregate: 311/756 (41.1%)  |  Perfect 7/7: 38/108
+7268.1s 83 ────────────────────────────────────────────────────────
+7268.1s 84 ████░░░░░░  42.6%  7.8.1 Goal Setting & Maintenance
+7268.1s 85 ████░░░░░░  41.7%  7.8.2 Planning
+7268.1s 86 ███░░░░░░░  38.0%  7.8.3 Inhibitory Control
+7268.1s 87 ████░░░░░░  41.7%  7.8.4 Cognitive Flexibility
+7268.1s 88 ███░░░░░░░  38.9%  7.8.5 Conflict Resolution
+7268.1s 89 ████░░░░░░  42.6%  7.8.6 Working Memory
+7268.1s 90 ████░░░░░░  42.6%  7.8   Composite EF Integration
+7268.1s 91 ────────────────────────────────────────────────────────
+7268.1s 92 By difficulty: basic=41%
+7268.1s 93 ============================================================
+7268.1s 94 Status:        success
+7268.1s 95 Passed:        True
+7268.1s 96 Error message: None
+7268.1s 97 Result type:   tuple
+7268.1s 98 
+7268.1s 99 Assertions passed: 311/756
+7268.1s 100 Score:             0.4114
+7272.3s 101 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["remove_papermill_header.RemovePapermillHeader"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+7272.3s 102 warn(
+7272.3s 103 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+7272.6s 104 [NbConvertApp] Writing 100137 bytes to __notebook__.ipynb
+7275.4s 105 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["nbconvert.preprocessors.ExtractOutputPreprocessor"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+7275.4s 106 warn(
+7275.4s 107 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+7276.5s 108 [NbConvertApp] Writing 383738 bytes to __results__.html
