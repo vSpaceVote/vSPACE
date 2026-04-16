@@ -1,0 +1,186 @@
+32.9s 1 Loaded 108 proof tasks (basic difficulty only)
+32.9s 2 
+32.9s 3 Difficulty distribution:
+32.9s 4 difficulty
+32.9s 5 basic    108
+32.9s 6 Name: count, dtype: int64
+32.9s 7 
+32.9s 8 Columns: ['id', 'description', 'lean_code', 'signature', 'metadata', 'tests', 'reject_inputs', 'difficulty']
+32.9s 9 Defined 7 EF assertion functions:
+32.9s 10 7.8.1 Goal Setting & Maintenance: assert_goal_setting
+32.9s 11 7.8.2 Planning: assert_planning
+32.9s 12 7.8.3 Inhibitory Control: assert_inhibitory_control
+32.9s 13 7.8.4 Cognitive Flexibility: assert_cognitive_flexibility
+32.9s 14 7.8.5 Conflict Resolution: assert_conflict_resolution
+32.9s 15 7.8.6 Working Memory: assert_working_memory
+32.9s 16 7.8   Composite EF Integration: assert_structural_validity
+36.7s 17 Traceback (most recent call last):
+36.7s 18 File "<string>", line 1, in <module>
+36.7s 19 File "/benchmarks/.venv/lib/python3.11/site-packages/papermill/execute.py", line 131, in execute_notebook
+36.7s 20 raise_for_execution_errors(nb, output_path)
+36.7s 21 File "/benchmarks/.venv/lib/python3.11/site-packages/papermill/execute.py", line 251, in raise_for_execution_errors
+36.7s 22 raise error
+36.7s 23 papermill.exceptions.PapermillExecutionError:
+36.7s 24 ---------------------------------------------------------------------------
+36.7s 25 Exception encountered at "In [8]":
+36.7s 26 ---------------------------------------------------------------------------
+36.7s 27 PermissionDeniedError                     Traceback (most recent call last)
+36.7s 28 Cell In[8], line 53
+36.7s 29 49     return passed, NUM_ASSERTIONS
+36.7s 30 52 # Run diagnostic on row 0
+36.7s 31 ---> 53 dry_run_single_row(kbench.llm, row_idx=0)
+36.7s 32 
+36.7s 33 Cell In[8], line 22, in dry_run_single_row(llm, row_idx)
+36.7s 34 20     response = llm.prompt(prompt, max_tokens=2048, temperature=0.2)
+36.7s 35 21 except TypeError:
+36.7s 36 ---> 22     response = llm.prompt(prompt)
+36.7s 37 24 if not isinstance(response, str):
+36.7s 38 25     response = str(response) if response is not None else ""
+36.7s 39 
+36.7s 40 File /benchmarks/src/kaggle_benchmarks/actors/llms.py:184, in LLMChat.prompt(self, message, schema, seed, temperature, tools, image, video, audio)
+36.7s 41 181     actors.user.send(audio)
+36.7s 42 183 actors.user.send(message)
+36.7s 43 --> 184 return self.respond(
+36.7s 44 185     schema=schema,
+36.7s 45 186     seed=seed,
+36.7s 46 187     temperature=temperature if self.support_temperature else None,
+36.7s 47 188     tools=tools if tools is not None else [],
+36.7s 48 189 ).content
+36.7s 49 
+36.7s 50 File /benchmarks/src/kaggle_benchmarks/chats.py:118, in emits_message.<locals>.wrapper(self, is_visible_to_llm, *args, **kwargs)
+36.7s 51 116 chat = get_current_chat()
+36.7s 52 117 events.manager.dispatch("awaiting_message", chat, self)
+36.7s 53 --> 118 result = func(self, *args, **kwargs)
+36.7s 54 119 if isinstance(result, Message):
+36.7s 55 120     result.is_visible_to_llm = is_visible_to_llm
+36.7s 56 
+36.7s 57 File /benchmarks/src/kaggle_benchmarks/actors/llms.py:233, in LLMChat.respond(self, system, schema, **kwargs)
+36.7s 58 223 response = messages.Message(
+36.7s 59 224     sender=self,
+36.7s 60 225     content="",
+36.7s 61 226     _status=utils.Status.RUNNING,
+36.7s 62 227 )
+36.7s 63 229 raw_messages = [
+36.7s 64 230     msg for msg in chat.messages if msg.is_visible_to_llm
+36.7s 65 231 ] + temp_messages
+36.7s 66 --> 233 invoke_response = self.invoke(
+36.7s 67 234     raw_messages,
+36.7s 68 235     system=system,
+36.7s 69 236     **kwargs,
+36.7s 70 237 )
+36.7s 71 238 if isinstance(invoke_response, LLMResponse):
+36.7s 72 239     # A response can have either content, tool_calls, or both in some cases.
+36.7s 73 240     response.content = invoke_response.content or ""
+36.7s 74 
+36.7s 75 File /benchmarks/src/kaggle_benchmarks/actors/llms.py:322, in OpenAI.invoke(self, messages, system, **kwargs)
+36.7s 76 317 if self._should_remove_seed():
+36.7s 77 318     # TODO(b/430112500): Remove once model proxy supports it for AIS backends.
+36.7s 78 319     # Temporarily do not send "seed" parameter for models not supporting it in Model Proxy.
+36.7s 79 320     kwargs.pop("seed", None)
+36.7s 80 --> 322 return self._call_api(raw_messages, **kwargs)
+36.7s 81 
+36.7s 82 File /benchmarks/src/kaggle_benchmarks/actors/llms.py:370, in OpenAI._call_api(self, messages, **kwargs)
+36.7s 83 366         kwargs["stream"] = True
+36.7s 84 368     method = self.client.chat.completions.create
+36.7s 85 --> 370 response = method(
+36.7s 86 371     model=self.model,
+36.7s 87 372     messages=messages,
+36.7s 88 373     **kwargs,
+36.7s 89 374 )
+36.7s 90 376 if isinstance(response, openai.Stream):
+36.7s 91 377     return self._get_stream_response(response)
+36.7s 92 
+36.7s 93 File /benchmarks/.venv/lib/python3.11/site-packages/openai/_utils/_utils.py:286, in required_args.<locals>.inner.<locals>.wrapper(*args, **kwargs)
+36.7s 94 284             msg = f"Missing required argument: {quote(missing[0])}"
+36.7s 95 285     raise TypeError(msg)
+36.7s 96 --> 286 return func(*args, **kwargs)
+36.7s 97 
+36.7s 98 File /benchmarks/.venv/lib/python3.11/site-packages/openai/resources/chat/completions/completions.py:1192, in Completions.create(self, messages, model, audio, frequency_penalty, function_call, functions, logit_bias, logprobs, max_completion_tokens, max_tokens, metadata, modalities, n, parallel_tool_calls, prediction, presence_penalty, prompt_cache_key, prompt_cache_retention, reasoning_effort, response_format, safety_identifier, seed, service_tier, stop, store, stream, stream_options, temperature, tool_choice, tools, top_logprobs, top_p, user, verbosity, web_search_options, extra_headers, extra_query, extra_body, timeout)
+36.7s 99 1145 @required_args(["messages", "model"], ["messages", "model", "stream"])
+36.7s 100 1146 def create(
+36.7s 101 1147     self,
+36.7s 102 (...)
+36.7s 103 1189     timeout: float | httpx.Timeout | None | NotGiven = not_given,
+36.7s 104 1190 ) -> ChatCompletion | Stream[ChatCompletionChunk]:
+36.7s 105 1191     validate_response_format(response_format)
+36.7s 106 -> 1192     return self._post(
+36.7s 107 1193         "/chat/completions",
+36.7s 108 1194         body=maybe_transform(
+36.7s 109 1195             {
+36.7s 110 1196                 "messages": messages,
+36.7s 111 1197                 "model": model,
+36.7s 112 1198                 "audio": audio,
+36.7s 113 1199                 "frequency_penalty": frequency_penalty,
+36.7s 114 1200                 "function_call": function_call,
+36.7s 115 1201                 "functions": functions,
+36.7s 116 1202                 "logit_bias": logit_bias,
+36.7s 117 1203                 "logprobs": logprobs,
+36.7s 118 1204                 "max_completion_tokens": max_completion_tokens,
+36.7s 119 1205                 "max_tokens": max_tokens,
+36.7s 120 1206                 "metadata": metadata,
+36.7s 121 1207                 "modalities": modalities,
+36.7s 122 1208                 "n": n,
+36.7s 123 1209                 "parallel_tool_calls": parallel_tool_calls,
+36.7s 124 1210                 "prediction": prediction,
+36.7s 125 1211                 "presence_penalty": presence_penalty,
+36.7s 126 1212                 "prompt_cache_key": prompt_cache_key,
+36.7s 127 1213                 "prompt_cache_retention": prompt_cache_retention,
+36.7s 128 1214                 "reasoning_effort": reasoning_effort,
+36.7s 129 1215                 "response_format": response_format,
+36.7s 130 1216                 "safety_identifier": safety_identifier,
+36.7s 131 1217                 "seed": seed,
+36.7s 132 1218                 "service_tier": service_tier,
+36.7s 133 1219                 "stop": stop,
+36.7s 134 1220                 "store": store,
+36.7s 135 1221                 "stream": stream,
+36.7s 136 1222                 "stream_options": stream_options,
+36.7s 137 1223                 "temperature": temperature,
+36.7s 138 1224                 "tool_choice": tool_choice,
+36.7s 139 1225                 "tools": tools,
+36.7s 140 1226                 "top_logprobs": top_logprobs,
+36.7s 141 1227                 "top_p": top_p,
+36.7s 142 1228                 "user": user,
+36.7s 143 1229                 "verbosity": verbosity,
+36.7s 144 1230                 "web_search_options": web_search_options,
+36.7s 145 1231             },
+36.7s 146 1232             completion_create_params.CompletionCreateParamsStreaming
+36.7s 147 1233             if stream
+36.7s 148 1234             else completion_create_params.CompletionCreateParamsNonStreaming,
+36.7s 149 1235         ),
+36.7s 150 1236         options=make_request_options(
+36.7s 151 1237             extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+36.7s 152 1238         ),
+36.7s 153 1239         cast_to=ChatCompletion,
+36.7s 154 1240         stream=stream or False,
+36.7s 155 1241         stream_cls=Stream[ChatCompletionChunk],
+36.7s 156 1242     )
+36.7s 157 
+36.7s 158 File /benchmarks/.venv/lib/python3.11/site-packages/openai/_base_client.py:1259, in SyncAPIClient.post(self, path, cast_to, body, options, files, stream, stream_cls)
+36.7s 159 1245 def post(
+36.7s 160 1246     self,
+36.7s 161 1247     path: str,
+36.7s 162 (...)
+36.7s 163 1254     stream_cls: type[_StreamT] | None = None,
+36.7s 164 1255 ) -> ResponseT | _StreamT:
+36.7s 165 1256     opts = FinalRequestOptions.construct(
+36.7s 166 1257         method="post", url=path, json_data=body, files=to_httpx_files(files), **options
+36.7s 167 1258     )
+36.7s 168 -> 1259     return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+36.7s 169 
+36.7s 170 File /benchmarks/.venv/lib/python3.11/site-packages/openai/_base_client.py:1047, in SyncAPIClient.request(self, cast_to, options, stream, stream_cls)
+36.7s 171 1044             err.response.read()
+36.7s 172 1046         log.debug("Re-raising status error")
+36.7s 173 -> 1047         raise self._make_status_error_from_response(err.response) from None
+36.7s 174 1049     break
+36.7s 175 1051 assert response is not None, "could not resolve response (should never happen)"
+36.7s 176 
+36.7s 177 PermissionDeniedError: Error code: 403 - {'message': 'The estimated cost of this operation ($3.2035) exceeds your available quota. Try again later.', 'type': 'invalid_request_error'}
+36.7s 178 
+39.3s 179 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["remove_papermill_header.RemovePapermillHeader"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+39.3s 180 warn(
+39.4s 181 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+39.6s 182 [NbConvertApp] Writing 125208 bytes to __notebook__.ipynb
+42.0s 183 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["nbconvert.preprocessors.ExtractOutputPreprocessor"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+42.0s 184 warn(
+42.0s 185 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+43.1s 186 [NbConvertApp] Writing 428470 bytes to __results__.html

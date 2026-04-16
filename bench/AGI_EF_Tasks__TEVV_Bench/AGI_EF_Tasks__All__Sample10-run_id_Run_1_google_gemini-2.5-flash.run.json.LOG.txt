@@ -1,0 +1,254 @@
+17.1s 1 Loaded 60 proof tasks (10 samples per category)
+17.1s 2 
+17.1s 3 Difficulty distribution in the final sample:
+17.1s 4 difficulty
+17.1s 5 basic         10
+17.1s 6 advanced      10
+17.1s 7 coq_based     10
+17.1s 8 basic_core    10
+17.1s 9 autonomous    10
+17.1s 10 augmented     10
+17.1s 11 Name: count, dtype: int64
+17.1s 12 
+17.1s 13 Columns: ['id', 'description', 'lean_code', 'signature', 'metadata', 'tests', 'reject_inputs', 'difficulty']
+17.1s 14 Defined 7 EF assertion functions:
+17.1s 15 7.8.1 Goal Setting & Maintenance: assert_goal_setting
+17.1s 16 7.8.2 Planning: assert_planning
+17.1s 17 7.8.3 Inhibitory Control: assert_inhibitory_control
+17.1s 18 7.8.4 Cognitive Flexibility: assert_cognitive_flexibility
+17.1s 19 7.8.5 Conflict Resolution: assert_conflict_resolution
+17.1s 20 7.8.6 Working Memory: assert_working_memory
+17.1s 21 7.8   Composite EF Integration: assert_structural_validity
+79.7s 22 Task:       verina_basic_83
+79.7s 23 Difficulty: basic
+79.7s 24 Response length:  6472 chars
+79.7s 25 Extracted proof:  6459 chars
+79.7s 26 
+79.7s 27 --- Extracted Proof (first 500 chars) ---
+79.7s 28 -- !benchmark @start import type=solution
+79.7s 29 import Lean.Data.Array.Basic
+79.7s 30 -- !benchmark @end import
+79.7s 31 
+79.7s 32 -- !benchmark @start solution_aux
+79.7s 33 open Array
+79.7s 34 
+79.7s 35 -- Helper for Array.set! size property
+79.7s 36 @[simp]
+79.7s 37 theorem Array.size_set_eq (a : Array α) (i : Nat) (v : α) (h : i < a.size) : (a.set! i v).size = a.size := by
+79.7s 38 exact Array.size_set a i v
+79.7s 39 
+79.7s 40 -- Helper for Array.get! on mkArray
+79.7s 41 @[simp]
+79.7s 42 theorem Array.get!_mkArray_eq_value {α : Type u} (n : Nat) (val : α) (i : Nat) (hi : i < n) : (Array.mkArray n val)[i]! = val
+79.7s 43 
+79.7s 44 --- Tactics found ---
+79.7s 45 ['intro', 'apply', 'exact', 'use', 'rw', 'rfl', 'subst', 'simp', 'omega', 'decide', 'induction', 'constructor', 'left', 'right', 'have', 'let', 'show']
+79.7s 46 
+79.7s 47 --- Categories used ---
+79.7s 48 {'simplification', 'destruction', 'construction', 'hypothesis', 'introduction', 'rewriting', 'application'}
+79.7s 49 
+79.7s 50 --- 7.8.x Assertion Results ---
+79.7s 51 [PASS]  7.8.1 Goal Setting & Maintenance
+79.7s 52 [PASS]  7.8.2 Planning
+79.7s 53 [PASS]  7.8.3 Inhibitory Control
+79.7s 54 [PASS]  7.8.4 Cognitive Flexibility
+79.7s 55 [PASS]  7.8.5 Conflict Resolution
+79.7s 56 [PASS]  7.8.6 Working Memory
+79.7s 57 [PASS]  7.8   Composite EF Integration
+79.7s 58 
+79.7s 59 Score: 7/7
+428.2s 60 
+428.2s 61 ============================================================
+428.2s 62 MILESTONE: Row 5/60  |  348s elapsed  |  0.0 rows/s  |  ETA 3831s
+428.2s 63 Aggregate: 31/35 (88.6%)  |  Perfect 7/7: 3/5
+428.2s 64 ────────────────────────────────────────────────────────
+428.2s 65 ██████████ 100.0%  7.8.1 Goal Setting & Maintenance
+428.2s 66 ████████░░  80.0%  7.8.2 Planning
+428.2s 67 ████████░░  80.0%  7.8.3 Inhibitory Control
+428.2s 68 ████████░░  80.0%  7.8.4 Cognitive Flexibility
+428.2s 69 ████████░░  80.0%  7.8.5 Conflict Resolution
+428.2s 70 ██████████ 100.0%  7.8.6 Working Memory
+428.2s 71 ██████████ 100.0%  7.8   Composite EF Integration
+428.2s 72 ────────────────────────────────────────────────────────
+428.2s 73 By difficulty: basic=18%
+428.2s 74 ============================================================
+625.1s 75 
+625.1s 76 ============================================================
+625.1s 77 MILESTONE: Row 10/60  |  545s elapsed  |  0.0 rows/s  |  ETA 2726s
+625.1s 78 Aggregate: 66/70 (94.3%)  |  Perfect 7/7: 8/10
+625.1s 79 ────────────────────────────────────────────────────────
+625.1s 80 ██████████ 100.0%  7.8.1 Goal Setting & Maintenance
+625.1s 81 █████████░  90.0%  7.8.2 Planning
+625.1s 82 █████████░  90.0%  7.8.3 Inhibitory Control
+625.1s 83 █████████░  90.0%  7.8.4 Cognitive Flexibility
+625.1s 84 █████████░  90.0%  7.8.5 Conflict Resolution
+625.1s 85 ██████████ 100.0%  7.8.6 Working Memory
+625.1s 86 ██████████ 100.0%  7.8   Composite EF Integration
+625.1s 87 ────────────────────────────────────────────────────────
+625.1s 88 By difficulty: basic=19%
+625.1s 89 ============================================================
+1078.8s 90 
+1078.8s 91 ============================================================
+1078.8s 92 MILESTONE: Row 15/60  |  999s elapsed  |  0.0 rows/s  |  ETA 2997s
+1078.8s 93 Aggregate: 96/105 (91.4%)  |  Perfect 7/7: 8/15
+1078.8s 94 ────────────────────────────────────────────────────────
+1078.8s 95 ██████████ 100.0%  7.8.1 Goal Setting & Maintenance
+1078.8s 96 █████████░  93.3%  7.8.2 Planning
+1078.8s 97 ██████░░░░  60.0%  7.8.3 Inhibitory Control
+1078.8s 98 █████████░  93.3%  7.8.4 Cognitive Flexibility
+1078.8s 99 █████████░  93.3%  7.8.5 Conflict Resolution
+1078.8s 100 ██████████ 100.0%  7.8.6 Working Memory
+1078.8s 101 ██████████ 100.0%  7.8   Composite EF Integration
+1078.8s 102 ────────────────────────────────────────────────────────
+1078.8s 103 By difficulty: advanced=17% | basic=19%
+1078.8s 104 ============================================================
+1281.6s 105 
+1281.6s 106 ============================================================
+1281.6s 107 MILESTONE: Row 20/60  |  1202s elapsed  |  0.0 rows/s  |  ETA 2403s
+1281.6s 108 Aggregate: 121/140 (86.4%)  |  Perfect 7/7: 9/20
+1281.6s 109 ────────────────────────────────────────────────────────
+1281.6s 110 █████████░  95.0%  7.8.1 Goal Setting & Maintenance
+1281.6s 111 █████████░  90.0%  7.8.2 Planning
+1281.6s 112 █████░░░░░  50.0%  7.8.3 Inhibitory Control
+1281.6s 113 █████████░  90.0%  7.8.4 Cognitive Flexibility
+1281.6s 114 █████████░  90.0%  7.8.5 Conflict Resolution
+1281.6s 115 █████████░  95.0%  7.8.6 Working Memory
+1281.6s 116 █████████░  95.0%  7.8   Composite EF Integration
+1281.6s 117 ────────────────────────────────────────────────────────
+1281.6s 118 By difficulty: advanced=16% | basic=19%
+1281.6s 119 ============================================================
+1539.5s 120 
+1539.5s 121 ============================================================
+1539.5s 122 MILESTONE: Row 25/60  |  1460s elapsed  |  0.0 rows/s  |  ETA 2043s
+1539.5s 123 Aggregate: 151/175 (86.3%)  |  Perfect 7/7: 11/25
+1539.5s 124 ────────────────────────────────────────────────────────
+1539.5s 125 █████████░  96.0%  7.8.1 Goal Setting & Maintenance
+1539.5s 126 ████████░░  88.0%  7.8.2 Planning
+1539.5s 127 █████░░░░░  52.0%  7.8.3 Inhibitory Control
+1539.5s 128 ████████░░  88.0%  7.8.4 Cognitive Flexibility
+1539.5s 129 ████████░░  88.0%  7.8.5 Conflict Resolution
+1539.5s 130 █████████░  96.0%  7.8.6 Working Memory
+1539.5s 131 █████████░  96.0%  7.8   Composite EF Integration
+1539.5s 132 ────────────────────────────────────────────────────────
+1539.5s 133 By difficulty: advanced=16% | basic=19% | coq_based=17%
+1539.5s 134 ============================================================
+1662.5s 135 
+1662.5s 136 ============================================================
+1662.5s 137 MILESTONE: Row 30/60  |  1583s elapsed  |  0.0 rows/s  |  ETA 1583s
+1662.5s 138 Aggregate: 178/210 (84.8%)  |  Perfect 7/7: 14/30
+1662.5s 139 ────────────────────────────────────────────────────────
+1662.5s 140 █████████░  93.3%  7.8.1 Goal Setting & Maintenance
+1662.5s 141 ████████░░  86.7%  7.8.2 Planning
+1662.5s 142 █████░░░░░  56.7%  7.8.3 Inhibitory Control
+1662.5s 143 ████████░░  86.7%  7.8.4 Cognitive Flexibility
+1662.5s 144 ████████░░  83.3%  7.8.5 Conflict Resolution
+1662.5s 145 █████████░  93.3%  7.8.6 Working Memory
+1662.5s 146 █████████░  93.3%  7.8   Composite EF Integration
+1662.5s 147 ────────────────────────────────────────────────────────
+1662.5s 148 By difficulty: advanced=16% | basic=19% | coq_based=16%
+1662.5s 149 ============================================================
+1829.5s 150 
+1829.5s 151 ============================================================
+1829.5s 152 MILESTONE: Row 35/60  |  1750s elapsed  |  0.0 rows/s  |  ETA 1250s
+1829.5s 153 Aggregate: 205/245 (83.7%)  |  Perfect 7/7: 17/35
+1829.5s 154 ────────────────────────────────────────────────────────
+1829.5s 155 █████████░  91.4%  7.8.1 Goal Setting & Maintenance
+1829.5s 156 ████████░░  85.7%  7.8.2 Planning
+1829.5s 157 ██████░░░░  60.0%  7.8.3 Inhibitory Control
+1829.5s 158 ████████░░  85.7%  7.8.4 Cognitive Flexibility
+1829.5s 159 ████████░░  80.0%  7.8.5 Conflict Resolution
+1829.5s 160 █████████░  91.4%  7.8.6 Working Memory
+1829.5s 161 █████████░  91.4%  7.8   Composite EF Integration
+1829.5s 162 ────────────────────────────────────────────────────────
+1829.5s 163 By difficulty: advanced=16% | basic=19% | basic_core=15% | coq_based=16%
+1829.5s 164 ============================================================
+1924.2s 165 
+1924.2s 166 ============================================================
+1924.2s 167 MILESTONE: Row 40/60  |  1844s elapsed  |  0.0 rows/s  |  ETA 922s
+1924.2s 168 Aggregate: 238/280 (85.0%)  |  Perfect 7/7: 20/40
+1924.2s 169 ────────────────────────────────────────────────────────
+1924.2s 170 █████████░  92.5%  7.8.1 Goal Setting & Maintenance
+1924.2s 171 ████████░░  87.5%  7.8.2 Planning
+1924.2s 172 ██████░░░░  65.0%  7.8.3 Inhibitory Control
+1924.2s 173 ████████░░  87.5%  7.8.4 Cognitive Flexibility
+1924.2s 174 ███████░░░  77.5%  7.8.5 Conflict Resolution
+1924.2s 175 █████████░  92.5%  7.8.6 Working Memory
+1924.2s 176 █████████░  92.5%  7.8   Composite EF Integration
+1924.2s 177 ────────────────────────────────────────────────────────
+1924.2s 178 By difficulty: advanced=16% | basic=19% | basic_core=17% | coq_based=16%
+1924.2s 179 ============================================================
+2144.3s 180 
+2144.3s 181 ============================================================
+2144.3s 182 MILESTONE: Row 45/60  |  2064s elapsed  |  0.0 rows/s  |  ETA 688s
+2144.3s 183 Aggregate: 269/315 (85.4%)  |  Perfect 7/7: 21/45
+2144.3s 184 ────────────────────────────────────────────────────────
+2144.3s 185 █████████░  93.3%  7.8.1 Goal Setting & Maintenance
+2144.3s 186 ████████░░  88.9%  7.8.2 Planning
+2144.3s 187 ██████░░░░  68.9%  7.8.3 Inhibitory Control
+2144.3s 188 ████████░░  88.9%  7.8.4 Cognitive Flexibility
+2144.3s 189 ███████░░░  71.1%  7.8.5 Conflict Resolution
+2144.3s 190 █████████░  93.3%  7.8.6 Working Memory
+2144.3s 191 █████████░  93.3%  7.8   Composite EF Integration
+2144.3s 192 ────────────────────────────────────────────────────────
+2144.3s 193 By difficulty: advanced=16% | autonomous=18% | basic=19% | basic_core=17% | coq_based=16%
+2144.3s 194 ============================================================
+2765.6s 195 
+2765.6s 196 ============================================================
+2765.6s 197 MILESTONE: Row 50/60  |  2686s elapsed  |  0.0 rows/s  |  ETA 537s
+2765.6s 198 Aggregate: 295/350 (84.3%)  |  Perfect 7/7: 23/50
+2765.6s 199 ────────────────────────────────────────────────────────
+2765.6s 200 █████████░  92.0%  7.8.1 Goal Setting & Maintenance
+2765.6s 201 ████████░░  88.0%  7.8.2 Planning
+2765.6s 202 ███████░░░  70.0%  7.8.3 Inhibitory Control
+2765.6s 203 ████████░░  88.0%  7.8.4 Cognitive Flexibility
+2765.6s 204 ██████░░░░  68.0%  7.8.5 Conflict Resolution
+2765.6s 205 █████████░  92.0%  7.8.6 Working Memory
+2765.6s 206 █████████░  92.0%  7.8   Composite EF Integration
+2765.6s 207 ────────────────────────────────────────────────────────
+2765.6s 208 By difficulty: advanced=16% | autonomous=16% | basic=19% | basic_core=17% | coq_based=16%
+2765.6s 209 ============================================================
+3085.0s 210 
+3085.0s 211 ============================================================
+3085.0s 212 MILESTONE: Row 55/60  |  3005s elapsed  |  0.0 rows/s  |  ETA 273s
+3085.0s 213 Aggregate: 330/385 (85.7%)  |  Perfect 7/7: 28/55
+3085.0s 214 ────────────────────────────────────────────────────────
+3085.0s 215 █████████░  92.7%  7.8.1 Goal Setting & Maintenance
+3085.0s 216 ████████░░  89.1%  7.8.2 Planning
+3085.0s 217 ███████░░░  72.7%  7.8.3 Inhibitory Control
+3085.0s 218 ████████░░  89.1%  7.8.4 Cognitive Flexibility
+3085.0s 219 ███████░░░  70.9%  7.8.5 Conflict Resolution
+3085.0s 220 █████████░  92.7%  7.8.6 Working Memory
+3085.0s 221 █████████░  92.7%  7.8   Composite EF Integration
+3085.0s 222 ────────────────────────────────────────────────────────
+3085.0s 223 By difficulty: advanced=16% | augmented=20% | autonomous=16% | basic=19% | basic_core=17% | coq_based=16%
+3085.0s 224 ============================================================
+3489.0s 225 
+3489.0s 226 ============================================================
+3489.0s 227 MILESTONE: Row 60/60  |  3409s elapsed  |  0.0 rows/s  |  ETA 0s
+3489.0s 228 Aggregate: 355/420 (84.5%)  |  Perfect 7/7: 29/60
+3489.0s 229 ────────────────────────────────────────────────────────
+3489.0s 230 █████████░  91.7%  7.8.1 Goal Setting & Maintenance
+3489.0s 231 ████████░░  88.3%  7.8.2 Planning
+3489.0s 232 ███████░░░  73.3%  7.8.3 Inhibitory Control
+3489.0s 233 ████████░░  88.3%  7.8.4 Cognitive Flexibility
+3489.0s 234 ██████░░░░  66.7%  7.8.5 Conflict Resolution
+3489.0s 235 █████████░  91.7%  7.8.6 Working Memory
+3489.0s 236 █████████░  91.7%  7.8   Composite EF Integration
+3489.0s 237 ────────────────────────────────────────────────────────
+3489.0s 238 By difficulty: advanced=16% | augmented=17% | autonomous=16% | basic=19% | basic_core=17% | coq_based=16%
+3489.0s 239 ============================================================
+3489.0s 240 Status:        success
+3489.0s 241 Passed:        True
+3489.0s 242 Error message: None
+3489.0s 243 Result type:   tuple
+3489.0s 244 
+3489.0s 245 Assertions passed: 355/420
+3489.0s 246 Score:             0.8452
+3492.3s 247 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["remove_papermill_header.RemovePapermillHeader"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+3492.3s 248 warn(
+3492.3s 249 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+3492.7s 250 [NbConvertApp] Writing 115425 bytes to __notebook__.ipynb
+3494.9s 251 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["nbconvert.preprocessors.ExtractOutputPreprocessor"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+3494.9s 252 warn(
+3494.9s 253 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+3496.0s 254 [NbConvertApp] Writing 399598 bytes to __results__.html

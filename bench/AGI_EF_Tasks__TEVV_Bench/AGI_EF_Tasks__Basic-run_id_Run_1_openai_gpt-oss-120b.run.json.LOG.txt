@@ -1,0 +1,90 @@
+24.7s 1 Loaded 108 proof tasks (basic difficulty only)
+24.7s 2 
+24.7s 3 Difficulty distribution:
+24.7s 4 difficulty
+24.7s 5 basic    108
+24.7s 6 Name: count, dtype: int64
+24.7s 7 
+24.7s 8 Columns: ['id', 'description', 'lean_code', 'signature', 'metadata', 'tests', 'reject_inputs', 'difficulty']
+24.7s 9 Defined 7 EF assertion functions:
+24.7s 10 7.8.1 Goal Setting & Maintenance: assert_goal_setting
+24.7s 11 7.8.2 Planning: assert_planning
+24.7s 12 7.8.3 Inhibitory Control: assert_inhibitory_control
+24.7s 13 7.8.4 Cognitive Flexibility: assert_cognitive_flexibility
+24.7s 14 7.8.5 Conflict Resolution: assert_conflict_resolution
+24.7s 15 7.8.6 Working Memory: assert_working_memory
+24.7s 16 7.8   Composite EF Integration: assert_structural_validity
+184.9s 17 Task:       verina_basic_70
+184.9s 18 Difficulty: basic
+184.9s 19 Response length:  143 chars
+184.9s 20 Extracted proof:  143 chars
+184.9s 21 
+184.9s 22 --- Extracted Proof (first 500 chars) ---
+184.9s 23 ```lean4
+184.9s 24 import Std.Data.Array.Basic
+184.9s 25 
+184.9s 26 @[reducible, simp]
+184.9s 27 def LinearSearch3_precond (a : Array Int) (P : Int → Bool) : Prop :=
+184.9s 28 ∃ i, i < a.size
+184.9s 29 
+184.9s 30 --- Tactics found ---
+184.9s 31 ['simp']
+184.9s 32 
+184.9s 33 --- Categories used ---
+184.9s 34 {'simplification'}
+184.9s 35 
+184.9s 36 --- 7.8.x Assertion Results ---
+184.9s 37 [PASS]  7.8.1 Goal Setting & Maintenance
+184.9s 38 [FAIL]  7.8.2 Planning
+184.9s 39 [FAIL]  7.8.3 Inhibitory Control
+184.9s 40 [FAIL]  7.8.4 Cognitive Flexibility
+184.9s 41 [FAIL]  7.8.5 Conflict Resolution
+184.9s 42 [FAIL]  7.8.6 Working Memory
+184.9s 43 [PASS]  7.8   Composite EF Integration
+184.9s 44 
+184.9s 45 Score: 2/7
+7210.2s 46 
+7210.2s 47 ============================================================
+7210.2s 48 MILESTONE: Row 100/108  |  7025s elapsed  |  0.0 rows/s  |  ETA 562s
+7210.2s 49 Aggregate: 251/700 (35.9%)  |  Perfect 7/7: 10/100
+7210.2s 50 ────────────────────────────────────────────────────────
+7210.2s 51 █░░░░░░░░░  14.0%  7.8.1 Goal Setting & Maintenance
+7210.2s 52 ███░░░░░░░  33.0%  7.8.2 Planning
+7210.2s 53 ██░░░░░░░░  27.0%  7.8.3 Inhibitory Control
+7210.2s 54 ███░░░░░░░  33.0%  7.8.4 Cognitive Flexibility
+7210.2s 55 ███░░░░░░░  30.0%  7.8.5 Conflict Resolution
+7210.2s 56 ███░░░░░░░  30.0%  7.8.6 Working Memory
+7210.2s 57 ████████░░  84.0%  7.8   Composite EF Integration
+7210.2s 58 ────────────────────────────────────────────────────────
+7210.2s 59 By difficulty: basic=36%
+7210.2s 60 ============================================================
+8106.6s 61 
+8106.6s 62 ============================================================
+8106.6s 63 MILESTONE: Row 108/108  |  7921s elapsed  |  0.0 rows/s  |  ETA 0s
+8106.6s 64 Aggregate: 259/756 (34.3%)  |  Perfect 7/7: 10/108
+8106.6s 65 ────────────────────────────────────────────────────────
+8106.6s 66 █░░░░░░░░░  13.0%  7.8.1 Goal Setting & Maintenance
+8106.6s 67 ███░░░░░░░  30.6%  7.8.2 Planning
+8106.6s 68 ██░░░░░░░░  25.0%  7.8.3 Inhibitory Control
+8106.6s 69 ███░░░░░░░  30.6%  7.8.4 Cognitive Flexibility
+8106.6s 70 ██░░░░░░░░  28.7%  7.8.5 Conflict Resolution
+8106.6s 71 ██░░░░░░░░  27.8%  7.8.6 Working Memory
+8106.6s 72 ████████░░  84.3%  7.8   Composite EF Integration
+8106.6s 73 ────────────────────────────────────────────────────────
+8106.6s 74 By difficulty: basic=34%
+8106.6s 75 ============================================================
+8106.7s 76 Status:        success
+8106.7s 77 Passed:        True
+8106.7s 78 Error message: None
+8106.7s 79 Result type:   tuple
+8106.7s 80 
+8106.7s 81 Assertions passed: 259/756
+8106.7s 82 Score:             0.3426
+8113.1s 83 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["remove_papermill_header.RemovePapermillHeader"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+8113.1s 84 warn(
+8113.1s 85 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+8113.6s 86 [NbConvertApp] Writing 99515 bytes to __notebook__.ipynb
+8117.6s 87 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["nbconvert.preprocessors.ExtractOutputPreprocessor"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+8117.6s 88 warn(
+8117.6s 89 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+8119.2s 90 [NbConvertApp] Writing 383371 bytes to __results__.html
