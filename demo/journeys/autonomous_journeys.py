@@ -16,6 +16,7 @@ Covers:
 
 import asyncio
 import json
+import secrets
 import time
 from datetime import datetime
 from pathlib import Path
@@ -111,7 +112,9 @@ class AutonomousUserJourneys:
             # Step 2: Create blinded commitments
             step_start = time.perf_counter()
             issuer = SAACIssuer()
-            params = issuer.generate_parameters()
+            params = issuer.get_public_params()
+            generator_g = bytes.fromhex(params["generator_g"])
+            generator_h = bytes.fromhex(params["generator_h"])
             for i in range(self.num_voters):
                 await asyncio.sleep(0.00005)  # Blinding per voter
             duration = (time.perf_counter() - step_start) * 1000
@@ -161,7 +164,7 @@ class AutonomousUserJourneys:
             step_start = time.perf_counter()
             holders = []
             for i in range(self.num_voters):
-                holder = SAACHolder()
+                holder = SAACHolder(params)
                 holders.append(holder)
                 await asyncio.sleep(0.00005)  # Unblinding per voter
             duration = (time.perf_counter() - step_start) * 1000
@@ -404,7 +407,12 @@ class AutonomousUserJourneys:
 
             # Step 2: Generate Pedersen commitment
             step_start = time.perf_counter()
-            binding_gen = BindingGenerator()
+            issuer = SAACIssuer()
+            params = issuer.get_public_params()
+            binding_gen = BindingGenerator(
+                bytes.fromhex(params["generator_g"]),
+                bytes.fromhex(params["generator_h"])
+            )
             for i in range(self.num_voters):
                 await asyncio.sleep(0.0001)  # Commitment per ballot
             duration = (time.perf_counter() - step_start) * 1000
@@ -532,7 +540,13 @@ class AutonomousUserJourneys:
         try:
             # Step 1: Derive serial numbers
             step_start = time.perf_counter()
-            vrf = VRFSerialDerivation()
+            # Create mock credential for VRF derivation
+            mock_credential = {
+                "credential_id": f"cred-{secrets.token_hex(8)}",
+                "issuer_signature": secrets.token_hex(64),
+                "auxiliary_info": secrets.token_hex(32)
+            }
+            vrf = VRFSerialDerivation(mock_credential)
             serial_numbers = []
             for i in range(self.num_voters):
                 await asyncio.sleep(0.00005)
@@ -727,7 +741,8 @@ class AutonomousUserJourneys:
 
             # Step 4: Construct vspace_record section
             step_start = time.perf_counter()
-            builder = AugmentedRecordBuilder()
+            election_id = f"election-{secrets.token_hex(8)}"
+            builder = AugmentedRecordBuilder(election_id)
             await asyncio.sleep(0.0001)
             duration = (time.perf_counter() - step_start) * 1000
             steps.append(
@@ -737,7 +752,7 @@ class AutonomousUserJourneys:
                     feature_id="F-109",
                     duration_ms=duration,
                     status="passed",
-                    details={"section_constructed": True},
+                    details={"section_constructed": True, "election_id": election_id},
                 )
             )
 

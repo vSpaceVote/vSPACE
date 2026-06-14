@@ -136,6 +136,8 @@ class E2EWorkflowOrchestrator:
                 "precinct": entra_vc["credential_subject"]["precinct"],
             },
             "blinded_commitment": blinded_commitment,
+            "issuer_signature": secrets.token_hex(64),
+            "auxiliary_info": secrets.token_hex(32),
             "derived_at": datetime.utcnow().isoformat(),
         }
 

@@ -16,7 +16,7 @@ Performance Target: <5 seconds for 1M ballot serialization
 
 import hashlib
 import json
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime
 
 from electionguard_vspace.constants import (

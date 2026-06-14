@@ -1,0 +1,41 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: vspace-keycloak
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8180
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HTTP_ENABLED: 'true'
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "8180:8080"
+    depends_on:
+      - keycloak-db
+    networks:
+      - vspace-network
+
+  keycloak-db:
+    image: postgres:15
+    container_name: vspace-keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+    networks:
+      - vspace-network
+
+volumes:
+  keycloak-db-data:
+
+networks:
+  vspace-network:
+    driver: bridge
